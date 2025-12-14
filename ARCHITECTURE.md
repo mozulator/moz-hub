@@ -23,14 +23,11 @@
 - **Database**: **None**
 - **Purpose**: Visual design baseline + components showcase
 
-### Sniper Buddy (`Projects/Sniper Buddy`)
+## Database-backed projects (recommended standard)
 
-- **Type**: Express sub-app mounted by the hub at `/p/sniper-buddy/`
-- **Backend**: Express (mounted; no separate service)
-- **ORM**: Prisma
-- **Database**: Postgres (Render Postgres in prod; Docker Postgres locally)
-- **Env var (local)**: `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/projects?schema=sniper_buddy`
-- **Notes**:
-  - We use **one Postgres database** and isolate each project using a dedicated **schema** via `?schema=<project_slug>`.
+- **DB**: Postgres
+- **Local dev**: Docker Postgres (via `docker-compose.yml`)
+- **Prod**: Render Postgres
+- **Pattern**: One Postgres instance, one schema per app (`?schema=<app_slug>`)
 
 

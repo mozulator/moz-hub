@@ -203,7 +203,7 @@ async function cmdEnsureServiceEnv() {
     throw new Error(`Could not find a connection string in connection-info response for ${pg.id}`);
   }
 
-  const schema = cfg.appSchemas?.['sniper-buddy'] || 'sniper_buddy';
+  const schema = cfg.databaseUrlSchema || 'public';
   const databaseUrl = ensureSchemaParam(raw, schema);
 
   await updateServiceEnvVars(service.id, [{ key: 'DATABASE_URL', value: databaseUrl }]);

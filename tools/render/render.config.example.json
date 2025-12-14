@@ -10,9 +10,7 @@
   "postgresName": "momcilo-projects",
   "postgresPlan": "free",
   "postgresVersion": "16",
-  "appSchemas": {
-    "sniper-buddy": "sniper_buddy"
-  }
+  "databaseUrlSchema": "public"
 }
 
 

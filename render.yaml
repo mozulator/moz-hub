@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: momcilo-project-hub
+    name: moz-projects
     env: node
     plan: free
-    buildCommand: npm install && npm run build && npm run db:setup
+    buildCommand: npm install && npm run build
     startCommand: npm start
     autoDeploy: true
     envVars:

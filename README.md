@@ -17,16 +17,7 @@ npm install
 docker compose up -d
 ```
 
-4. (Sniper Buddy) set `DATABASE_URL` (PowerShell):
-
-```powershell
-$env:DATABASE_URL="postgresql://postgres:postgres@localhost:5432/projects?schema=sniper_buddy"
-npm run sniper:sqlite:generate
-npm run sniper:export-seed
-npm run db:setup
-```
-
-5. Start:
+4. Start:
 
 ```powershell
 npm start
@@ -34,7 +25,6 @@ npm start
 
 Open:
 - Hub: `http://localhost:3000/`
-- Sniper Buddy: `http://localhost:3000/p/sniper-buddy/`
 - Design Skill: `http://localhost:3000/p/design-skill/`
 
 ## Add a new project
@@ -100,11 +90,7 @@ This repo includes `render.yaml` (Render Blueprint).
 
 ### Required env vars (Render)
 
-- `DATABASE_URL`: your Render Postgres connection string, plus `?schema=sniper_buddy`
-
-Notes:
-- We standardize on **Postgres** for DB-backed projects.
-- Use **one Postgres instance** and give each project its own schema via `?schema=<project_slug>`.
+- None (until you add a project that needs a database)
 
 ## GitHub setup
 

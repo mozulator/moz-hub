@@ -17,4 +17,7 @@ Projects/**/generated/prisma/**
 # Render automation local config (contains no secrets, but per-user values)
 tools/render/render.config.json
 
+# Removed project (kept ignored locally if any locked files remain)
+Projects/Sniper Buddy/
+
 
