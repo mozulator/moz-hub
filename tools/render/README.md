@@ -57,4 +57,11 @@ node tools/render/cli.js ensure-service-env
 node tools/render/cli.js deploy
 ```
 
+## Render setup from 0 (single web service)
+
+1. Render Dashboard → **New +** → **Blueprint**
+2. Select GitHub repo: `mozulator/moz-hub`
+3. Render will read `render.yaml` and create the **single web service**
+4. Turn on **Auto-Deploy** for `main`
+
 
