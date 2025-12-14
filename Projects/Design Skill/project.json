@@ -1,11 +1,11 @@
 {
   "slug": "design-skill",
-  "title": "Design Skill (Notion UI)",
-  "description": "Notion-style UI mock + design tokens used as the visual baseline for the hub.",
+  "title": "Design Skill",
+  "description": "Mozula’s clean, minimal, professional UI skill for AI coding (design tokens + examples).",
   "type": "static",
   "staticDir": ".",
   "index": "index.html",
-  "tags": ["design", "ui", "notion", "html", "css", "js"],
+  "tags": ["design", "ui", "ai-coding", "html", "css", "js"],
   "icon": "fa-palette"
 }
 

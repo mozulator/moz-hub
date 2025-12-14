@@ -1,4 +1,4 @@
-/* Notion-inspired minimal UI (based on Projects/Design Skill/design.md) */
+/* Mozula-style clean, minimal, professional UI (see Projects/Design Skill/design.md) */
 
 * {
   box-sizing: border-box;
@@ -157,8 +157,7 @@ code {
 
 .main {
   width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
+  flex: 1;
   padding: var(--space-6) var(--space-5);
   display: flex;
   flex-direction: column;
