@@ -5,7 +5,22 @@ const { PrismaClient } = require('@prisma/client');
 
 function createApp({ repoRoot }) {
   const projectRoot = path.join(repoRoot, 'Projects', 'Sniper Buddy');
-  const prisma = new PrismaClient();
+  // Prisma expects DATABASE_URL because schema.prisma uses env("DATABASE_URL").
+  // If the deploy environment didn't set it, we default to the repo-shipped SQLite DB.
+  // IMPORTANT: file: URLs should URL-encode spaces.
+  if (!process.env.DATABASE_URL) {
+    const relDbPath = path.join('Projects', 'Sniper Buddy', 'prisma', 'ballistics.db');
+    const posixRelDbPath = relDbPath.split(path.sep).join('/');
+    process.env.DATABASE_URL = `file:${posixRelDbPath}`.replace(/ /g, '%20');
+    // eslint-disable-next-line no-console
+    console.warn('[Sniper Buddy] DATABASE_URL was not set; defaulting to', process.env.DATABASE_URL);
+  }
+
+  let prisma = null;
+  function getPrisma() {
+    if (!prisma) prisma = new PrismaClient();
+    return prisma;
+  }
 
   const app = express();
 
@@ -54,7 +69,7 @@ function createApp({ repoRoot }) {
   // API Routes for Ballistic Data
   app.get('/api/ballistics', async (req, res) => {
     try {
-      const weapons = await prisma.weapon.findMany({
+      const weapons = await getPrisma().weapon.findMany({
         include: {
           ammunition: {
             include: {
