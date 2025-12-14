@@ -124,7 +124,7 @@ code,
   flex: 1;
   padding: var(--s-5);
   display: grid;
-  grid-template-columns: 320px 1fr 360px;
+  grid-template-columns: 1fr 380px;
   gap: var(--s-3);
   align-items: start;
   min-height: 0;
@@ -434,6 +434,37 @@ tbody tr:hover {
   max-height: 70vh;
 }
 
+.sb-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  min-height: 0;
+}
+
+.sb-ref {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sb-ref-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.modal-close {
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close i {
+  color: inherit;
+}
+
 /* FAB */
 .snipe-mode-fab {
   position: fixed;
@@ -448,6 +479,7 @@ tbody tr:hover {
   gap: 10px;
   box-shadow: var(--shadow);
   cursor: pointer;
+  color: var(--text);
 }
 
 .snipe-mode-fab:hover {

@@ -462,6 +462,8 @@ function calculateFromDistance() {
     const distanceInput = document.getElementById('distance');
     const resultDiv = document.getElementById('distanceResult');
     
+    if (!distanceInput || !resultDiv) return;
+    
     const distance = parseInt(distanceInput.value);
     
     if (!distance || !currentWeapon || !currentAmmo) {

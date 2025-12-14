@@ -70,144 +70,15 @@ function generateBuildContent(weaponData, ammoData, weaponKey) {
                 <img src="${imagePath}" alt="${weaponData.name}" onerror="this.parentElement.style.display='none'">
             </div>
         </div>
-    ` : '';
-    
-    // Build stats section (only if ammo is selected)
-    let statsSection = '';
-    let quickRefSection = '';
-    let tipsSection = '';
-    
-    if (ammoData) {
-        const ballisticsEntries = Object.entries(ammoData.ballistics);
-        const maxRange = Math.max(...ballisticsEntries.map(([distance]) => parseInt(distance)));
-        const maxMils = Math.max(...ballisticsEntries.map(([, mils]) => mils * weaponData.scopeMultiplier));
-        const shortAmmo = window.getShortAmmoName ? window.getShortAmmoName(ammoData.name) : ammoData.name;
-        const fullAmmo = window.getFullAmmoName ? window.getFullAmmoName(ammoData.name) : ammoData.name;
-        
-        statsSection = `
-            <!-- Weapon & Ammo Overview -->
-            <div class="build-section">
-                <h3 class="build-section-title">
-                    <i class="fas fa-info-circle"></i>
-                    Configuration
-                </h3>
-                <div class="build-grid">
-                    <div class="build-stat">
-                        <div class="build-stat-label">Weapon</div>
-                        <div class="build-stat-value">${weaponData.name}</div>
-                    </div>
-                    <div class="build-stat">
-                        <div class="build-stat-label">Scope Multiplier</div>
-                        <div class="build-stat-value accent">${weaponData.scopeMultiplier}×</div>
-                    </div>
-                    <div class="build-stat">
-                        <div class="build-stat-label">Ammunition</div>
-                        <div class="build-stat-value">${shortAmmo}</div>
-                    </div>
-                    <div class="build-stat">
-                        <div class="build-stat-label">Ammo Type</div>
-                        <div class="build-stat-value">${fullAmmo}</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Performance Stats -->
-            <div class="build-section">
-                <h3 class="build-section-title">
-                    <i class="fas fa-chart-bar"></i>
-                    Performance
-                </h3>
-                <div class="build-grid">
-                    <div class="build-stat">
-                        <div class="build-stat-label">Max Effective Range</div>
-                        <div class="build-stat-value accent">${maxRange}m</div>
-                    </div>
-                    <div class="build-stat">
-                        <div class="build-stat-label">Max Mil Adjustment</div>
-                        <div class="build-stat-value accent">${maxMils.toFixed(1)}</div>
-                    </div>
-                    <div class="build-stat">
-                        <div class="build-stat-label">Data Points</div>
-                        <div class="build-stat-value">${ballisticsEntries.length}</div>
-                    </div>
-                    <div class="build-stat">
-                        <div class="build-stat-label">Precision</div>
-                        <div class="build-stat-value">10m intervals</div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        quickRefSection = `
-            <!-- Quick Reference -->
-            <div class="build-section">
-                <h3 class="build-section-title">
-                    <i class="fas fa-list-ol"></i>
-                    Quick Reference
-                </h3>
-                <div class="build-quick-ref">
-                    ${ballisticsEntries.slice(0, 8).map(([distance, mils]) => {
-                        const adjustedMils = (mils * weaponData.scopeMultiplier).toFixed(1);
-                        return `
-                            <div class="build-quick-ref-item">
-                                <span>${distance}m</span>
-                                <span>${adjustedMils}</span>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            </div>
-        `;
-        
-        tipsSection = `
-            <!-- Tips -->
-            <div class="build-section">
-                <div class="build-tip">
-                    <div class="build-tip-title">
-                        <i class="fas fa-lightbulb"></i>
-                        Pro Tips
-                    </div>
-                    <div class="build-tip-content">
-                        All mil values are pre-adjusted for the ${weaponData.scopeMultiplier}× scope multiplier.
-                        Use the Range Calculator for distances between data points.
-                        Press <strong>S</strong> to enter Snipe Mode for fullscreen reference.
-                    </div>
-                </div>
-            </div>
-        `;
-    } else {
-        // No ammo selected - show basic weapon info
-        statsSection = `
-            <div class="build-section">
-                <h3 class="build-section-title">
-                    <i class="fas fa-info-circle"></i>
-                    Weapon Info
-                </h3>
-                <div class="build-grid">
-                    <div class="build-stat">
-                        <div class="build-stat-label">Weapon</div>
-                        <div class="build-stat-value">${weaponData.name}</div>
-                    </div>
-                    <div class="build-stat">
-                        <div class="build-stat-label">Scope Multiplier</div>
-                        <div class="build-stat-value accent">${weaponData.scopeMultiplier}×</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="alert alert-info mt-4">
-                <i class="fas fa-info-circle"></i>
-                <span>Select ammunition to view ballistic data and performance stats.</span>
-            </div>
-        `;
-    }
-    
-    return `
-        ${imageSection}
-        ${statsSection}
-        ${quickRefSection}
-        ${tipsSection}
+    ` : `
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>No image available for this weapon.</span>
+        </div>
     `;
+    
+    // Per requirement: image only (no extra info)
+    return `${imageSection}`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────────
@@ -419,6 +290,8 @@ function hideContextMenu() {
 }
 
 function initializeContextMenu() {
+    // Disabled: favorites are handled via the star button in Quick Reference.
+    return;
     // Close context menu on click outside
     document.addEventListener('click', (e) => {
         if (activeContextMenu && !activeContextMenu.contains(e.target)) {

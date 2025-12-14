@@ -37,7 +37,23 @@
         </header>
 
         <main class="sb-main">
-            <aside class="sb-left">
+            <section class="sb-center card">
+                <div class="chart-head">
+                    <div class="card-h-title"><i class="fa-solid fa-chart-line"></i><span>Trajectory</span></div>
+                    <div class="chart-meta" id="weaponInfoDisplay">
+                        <span id="weaponDisplayName">No weapon selected</span>
+                        <span class="muted">•</span>
+                        <span id="ammoDisplayName">—</span>
+                        <span class="muted">•</span>
+                        <span class="badge" id="scopeDisplayValue">—</span>
+                    </div>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="ballisticChart"></canvas>
+                </div>
+            </section>
+
+            <aside class="sb-side">
                 <div class="card">
                     <div class="card-h">
                         <div class="card-h-title"><i class="fa-solid fa-sliders"></i><span>Setup</span></div>
@@ -56,68 +72,36 @@
                             </select>
                         </div>
                         <button class="btn" onclick="showBuildModal()">
-                            <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-                            <span>View build</span>
+                            <i class="fa-regular fa-image"></i>
+                            <span>View build image</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="card" style="margin-top: 16px;">
+                <div class="card sb-ref">
                     <div class="card-h">
-                        <div class="card-h-title"><i class="fa-solid fa-calculator"></i><span>Range</span></div>
+                        <div class="card-h-title"><i class="fa-solid fa-table"></i><span>Quick reference</span></div>
+                        <button class="btn hidden" style="width:auto" id="clearFavoritesBtn" onclick="clearAllFavorites()" title="Clear all favorites">
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                            <span>Clear</span>
+                        </button>
                     </div>
-                    <div class="card-b">
-                        <div class="field">
-                            <div class="label">Distance (m)</div>
-                            <input type="number" id="distance" placeholder="Enter…" oninput="calculateFromDistance()">
-                        </div>
-                        <div class="result">
-                            <div class="k">Adjustment</div>
-                            <div id="distanceResult" class="v">—</div>
-                        </div>
+                    <div class="card-b sb-ref-body" style="padding:0">
+                        <table id="referenceTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 42px;">Fav</th>
+                                    <th>Range</th>
+                                    <th>Mils</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="3" class="muted">Select weapon & ammo</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-            </aside>
-
-            <section class="sb-center card">
-                <div class="chart-head">
-                    <div class="card-h-title"><i class="fa-solid fa-chart-line"></i><span>Trajectory</span></div>
-                    <div class="chart-meta" id="weaponInfoDisplay">
-                        <span id="weaponDisplayName">No weapon selected</span>
-                        <span class="muted">•</span>
-                        <span id="ammoDisplayName">—</span>
-                        <span class="muted">•</span>
-                        <span class="badge" id="scopeDisplayValue">—</span>
-                    </div>
-                </div>
-                <div class="chart-wrap">
-                    <canvas id="ballisticChart"></canvas>
-                </div>
-            </section>
-
-            <aside class="sb-right card">
-                <div class="card-h">
-                    <div class="card-h-title"><i class="fa-solid fa-table"></i><span>Quick reference</span></div>
-                    <button class="btn hidden" style="width:auto" id="clearFavoritesBtn" onclick="clearAllFavorites()" title="Clear all favorites">
-                        <i class="fa-solid fa-star-half-stroke"></i>
-                        <span>Clear</span>
-                    </button>
-                </div>
-                <div class="card-b" style="padding:0">
-                    <table id="referenceTable">
-                        <thead>
-                            <tr>
-                                <th style="width: 42px;">Fav</th>
-                                <th>Range</th>
-                                <th>Mils</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="3" class="muted">Select weapon & ammo</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </aside>
         </main>
