@@ -87,62 +87,34 @@ function generateBuildContent(weaponData, ammoData, weaponKey) {
 function toggleSnipeMode() {
     isSnipeModeActive = !isSnipeModeActive;
     
-    const overlay = document.getElementById('snipeModeOverlay');
     const fab = document.getElementById('snipeModeBtn');
     
     if (isSnipeModeActive) {
-        // Enter snipe mode
-        overlay.classList.add('active');
-        fab.style.display = 'none';
-        document.body.style.overflow = 'hidden';
-        
-        syncSnipeModeTable();
-        updateSnipeModeHeader();
-        
+        // Enter snipe mode: focus Quick Reference only (workarea fills)
+        document.body.classList.add('sb-snipe');
+        if (fab) {
+            fab.dataset.mode = 'exit';
+            const label = fab.querySelector('span:last-child');
+            if (label) label.textContent = 'Exit Snipe Mode';
+        }
         console.log('🎯 Snipe Mode: ACTIVATED');
     } else {
-        // Exit snipe mode
-        overlay.classList.remove('active');
-        fab.style.display = 'flex';
-        document.body.style.overflow = '';
-        
+        document.body.classList.remove('sb-snipe');
+        if (fab) {
+            fab.dataset.mode = 'enter';
+            const label = fab.querySelector('span:last-child');
+            if (label) label.textContent = 'Snipe Mode';
+        }
         console.log('🎯 Snipe Mode: DEACTIVATED');
     }
 }
 
 function syncSnipeModeTable() {
-    const originalTable = document.querySelector('#referenceTable tbody');
-    const snipeModeTable = document.querySelector('#snipeModeTable tbody');
-    
-    if (originalTable && snipeModeTable) {
-        // Clone the rows to preserve data attributes
-        snipeModeTable.innerHTML = '';
-        const rows = originalTable.querySelectorAll('tr');
-        rows.forEach(row => {
-            const clonedRow = row.cloneNode(true);
-            snipeModeTable.appendChild(clonedRow);
-        });
-    }
+    // No-op: we use the same Quick Reference table in snipe mode.
 }
 
 function updateSnipeModeHeader() {
-    const weaponNameEl = document.getElementById('snipeModeWeaponName');
-    if (!weaponNameEl) return;
-    
-    const weaponSelect = document.getElementById('weaponSelect');
-    const ammoSelect = document.getElementById('ammoSelect');
-    
-    if (weaponSelect?.value && ammoSelect?.value && window.ballisticData) {
-        const weapon = window.ballisticData[weaponSelect.value];
-        const ammo = weapon?.ammunition?.[ammoSelect.value];
-        
-        if (weapon && ammo) {
-            const shortAmmo = window.getShortAmmoName ? window.getShortAmmoName(ammo.name) : ammo.name;
-            weaponNameEl.textContent = `${weapon.name} • ${shortAmmo} • ${weapon.scopeMultiplier}×`;
-        }
-    } else {
-        weaponNameEl.textContent = '—';
-    }
+    // No-op: snipe mode no longer has a separate header.
 }
 
 // ─────────────────────────────────────────────────────────────────────────────────
@@ -319,18 +291,7 @@ function initializeContextMenu() {
         });
     }
     
-    // Also support snipe mode table
-    const snipeModeBody = document.querySelector('#snipeModeTable tbody');
-    if (snipeModeBody) {
-        snipeModeBody.addEventListener('contextmenu', (e) => {
-            const row = e.target.closest('tr[data-distance]');
-            if (row) {
-                const distance = parseInt(row.dataset.distance);
-                const mils = row.dataset.mils;
-                showContextMenu(e, distance, mils);
-            }
-        });
-    }
+    // Snipe mode uses the same quick reference table now.
 }
 
 // ─────────────────────────────────────────────────────────────────────────────────

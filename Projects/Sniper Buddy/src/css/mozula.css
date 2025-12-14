@@ -27,6 +27,7 @@
 html,
 body {
   height: 100%;
+  width: 100%;
 }
 
 body {
@@ -46,6 +47,7 @@ code,
 
 .sb-app {
   height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
 }
@@ -120,14 +122,20 @@ code,
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.sb-main {
+.sb-workarea {
   flex: 1;
+  min-height: 0;
+}
+
+.sb-main {
+  height: 100%;
   padding: var(--s-5);
   display: grid;
   grid-template-columns: 1fr 380px;
   gap: var(--s-3);
   align-items: start;
   min-height: 0;
+  overflow: hidden;
 }
 
 .hidden {
@@ -499,16 +507,31 @@ tbody tr:hover {
 }
 
 /* Quick reference: full height with scrollbar */
-.sb-right {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
+/* (handled by .sb-ref-body) */
+
+/* Snipe mode: show ONLY Quick Reference, fill full workarea */
+body.sb-snipe .sb-main {
+  grid-template-columns: 1fr;
 }
 
-.sb-right .card-b {
+body.sb-snipe .sb-center {
+  display: none;
+}
+
+body.sb-snipe .sb-side > .card:first-child {
+  display: none; /* Setup */
+}
+
+body.sb-snipe .sb-ref {
   flex: 1;
-  min-height: 0;
-  overflow: auto;
+}
+
+body.sb-snipe .sb-ref-body {
+  height: 100%;
+}
+
+body.sb-snipe .snipe-mode-fab {
+  bottom: 18px;
 }
 
 /* Build modal content (from old styles, adapted to Mozula tokens) */

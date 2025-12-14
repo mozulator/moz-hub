@@ -36,8 +36,9 @@
             </div>
         </header>
 
-        <main class="sb-main">
-            <section class="sb-center card">
+        <div class="sb-workarea">
+            <main class="sb-main">
+                <section class="sb-center card">
                 <div class="chart-head">
                     <div class="card-h-title"><i class="fa-solid fa-chart-line"></i><span>Trajectory</span></div>
                     <div class="chart-meta" id="weaponInfoDisplay">
@@ -51,9 +52,9 @@
                 <div class="chart-wrap">
                     <canvas id="ballisticChart"></canvas>
                 </div>
-            </section>
+                </section>
 
-            <aside class="sb-side">
+                <aside class="sb-side">
                 <div class="card">
                     <div class="card-h">
                         <div class="card-h-title"><i class="fa-solid fa-sliders"></i><span>Setup</span></div>
@@ -103,8 +104,9 @@
                         </table>
                     </div>
                 </div>
-            </aside>
-        </main>
+                </aside>
+            </main>
+        </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
@@ -117,38 +119,7 @@
         <span>Snipe Mode</span>
     </button>
 
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         Snipe Mode Overlay
-         ═══════════════════════════════════════════════════════════════════════ -->
-    <div class="snipe-mode-overlay" id="snipeModeOverlay">
-        <header class="snipe-mode-header">
-            <div class="snipe-mode-title">
-                <div class="snipe-mode-title-icon">
-                    <i class="fas fa-crosshairs"></i>
-                </div>
-                <span>Snipe Mode</span>
-                <span class="text-tertiary text-mono" id="snipeModeWeaponName">—</span>
-            </div>
-            <button class="btn btn-secondary" onclick="toggleSnipeMode()">
-                <i class="fas fa-times"></i>
-                Exit
-                <span class="kbd-hint">Esc</span>
-            </button>
-        </header>
-        <div class="snipe-mode-body">
-            <table class="snipe-mode-table" id="snipeModeTable">
-                <thead>
-                    <tr>
-                        <th>Distance (m)</th>
-                        <th>Mil Adjustment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Populated by JavaScript -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <!-- Snipe Mode is handled by CSS layout (hides everything except Quick Reference) -->
 
     <!-- ═══════════════════════════════════════════════════════════════════════
          Build Details Modal
