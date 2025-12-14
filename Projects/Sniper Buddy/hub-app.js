@@ -3,22 +3,36 @@ const cors = require('cors');
 const path = require('path');
 const { PrismaClient } = require('@prisma/client');
 
+function withSchema(databaseUrl, schema) {
+  const url = String(databaseUrl || '').trim();
+  if (!url) return url;
+  const u = new URL(url);
+  u.searchParams.set('schema', schema);
+  return u.toString();
+}
+
 function createApp({ repoRoot }) {
   const projectRoot = path.join(repoRoot, 'Projects', 'Sniper Buddy');
   // Prisma expects DATABASE_URL because schema.prisma uses env("DATABASE_URL").
   // If the deploy environment didn't set it, we default to the repo-shipped SQLite DB.
-  // IMPORTANT: file: URLs should URL-encode spaces.
+  // IMPORTANT: We standardize on Postgres now; default points at local docker-compose.
   if (!process.env.DATABASE_URL) {
-    const relDbPath = path.join('Projects', 'Sniper Buddy', 'prisma', 'ballistics.db');
-    const posixRelDbPath = relDbPath.split(path.sep).join('/');
-    process.env.DATABASE_URL = `file:${posixRelDbPath}`.replace(/ /g, '%20');
+    process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/projects?schema=sniper_buddy';
     // eslint-disable-next-line no-console
     console.warn('[Sniper Buddy] DATABASE_URL was not set; defaulting to', process.env.DATABASE_URL);
   }
 
   let prisma = null;
   function getPrisma() {
-    if (!prisma) prisma = new PrismaClient();
+    if (!prisma) {
+      prisma = new PrismaClient({
+        datasources: {
+          db: {
+            url: withSchema(process.env.DATABASE_URL, 'sniper_buddy')
+          }
+        }
+      });
+    }
     return prisma;
   }
 

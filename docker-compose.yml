@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: momcilo-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: projects
+    ports:
+      - "5432:5432"
+    volumes:
+      - momcilo_pg_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:latest
+    container_name: momcilo-adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  momcilo_pg_data:
+
+

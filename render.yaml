@@ -3,7 +3,7 @@ services:
     name: momcilo-project-hub
     env: node
     plan: free
-    buildCommand: npm install && npm run build
+    buildCommand: npm install && npm run build && npm run db:setup
     startCommand: npm start
     autoDeploy: true
     envVars:

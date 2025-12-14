@@ -11,13 +11,22 @@ This repo is a **hub website** that hosts your coding projects under one domain.
 npm install
 ```
 
-3. (Sniper Buddy) set Prisma DB path (PowerShell):
+3. Start local Postgres (Docker):
 
 ```powershell
-$env:DATABASE_URL="file:./Projects/Sniper Buddy/prisma/ballistics.db"
+docker compose up -d
 ```
 
-4. Start:
+4. (Sniper Buddy) set `DATABASE_URL` (PowerShell):
+
+```powershell
+$env:DATABASE_URL="postgresql://postgres:postgres@localhost:5432/projects?schema=sniper_buddy"
+npm run sniper:sqlite:generate
+npm run sniper:export-seed
+npm run db:setup
+```
+
+5. Start:
 
 ```powershell
 npm start
@@ -91,11 +100,11 @@ This repo includes `render.yaml` (Render Blueprint).
 
 ### Required env vars (Render)
 
-- `DATABASE_URL`: `file:./Projects/Sniper Buddy/prisma/ballistics.db`
+- `DATABASE_URL`: your Render Postgres connection string, plus `?schema=sniper_buddy`
 
 Notes:
-- This is **SQLite** inside the repo (good for read-only/static data like ballistic tables).
-- If you want persistent writes, we should migrate Sniper Buddy to **Render Postgres**.
+- We standardize on **Postgres** for DB-backed projects.
+- Use **one Postgres instance** and give each project its own schema via `?schema=<project_slug>`.
 
 ## GitHub setup
 

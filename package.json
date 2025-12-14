@@ -11,7 +11,12 @@
     "build": "prisma generate --schema \"Projects/Sniper Buddy/prisma/schema.prisma\"",
     "start": "node server.js",
     "dev": "set NODE_ENV=development&& node server.js",
-    "new": "node tools/new-project.js"
+    "new": "node tools/new-project.js",
+    "db:push": "prisma db push --schema \"Projects/Sniper Buddy/prisma/schema.prisma\"",
+    "db:seed": "node \"Projects/Sniper Buddy/prisma/seed.js\"",
+    "db:setup": "npm run db:push && npm run db:seed",
+    "sniper:sqlite:generate": "prisma generate --schema \"Projects/Sniper Buddy/prisma/schema.sqlite.prisma\"",
+    "sniper:export-seed": "node \"Projects/Sniper Buddy/prisma/export-seed.js\""
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",

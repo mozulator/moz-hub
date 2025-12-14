@@ -1,56 +1,51 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma/sqlite-client"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./ballistics.db"
 }
 
 model Weapon {
   id              String       @id @default(cuid())
-  key             String       @unique // e.g., "axmc", "t5000"
-  name            String       // e.g., "AXMC .338 LM"
+  key             String       @unique
+  name            String
   scopeMultiplier Float
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
-  
-  // Relations
+
   ammunition      Ammunition[]
-  
+
   @@map("weapons")
 }
 
 model Ammunition {
   id          String            @id @default(cuid())
-  key         String            // e.g., "fmj", "ap", "m61"
-  name        String            // e.g., "Full Metal Jacket"
+  key         String
+  name        String
   weaponId    String
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
-  
-  // Relations
+
   weapon      Weapon            @relation(fields: [weaponId], references: [id], onDelete: Cascade)
   ballistics  BallisticData[]
-  
+
   @@unique([weaponId, key])
   @@map("ammunition")
 }
 
 model BallisticData {
   id           String     @id @default(cuid())
-  distance     Int        // meters
-  mils         Float      // mill adjustment value
+  distance     Int
+  mils         Float
   ammunitionId String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  
-  // Relations
+
   ammunition   Ammunition @relation(fields: [ammunitionId], references: [id], onDelete: Cascade)
-  
+
   @@unique([ammunitionId, distance])
   @@map("ballistic_data")
 }
@@ -60,6 +55,8 @@ model DataVersion {
   version     String
   description String?
   lastUpdated DateTime @default(now())
-  
+
   @@map("data_versions")
-} 
+}
+
+

@@ -2,7 +2,7 @@
 
 ## Hub (this repo root)
 
-- **Runtime**: Node.js 18+
+- **Runtime**: Node.js 22 (LTS)
 - **Web framework**: Express
 - **Frontend**: Vanilla HTML/CSS/JS (Notion-style, based on `Projects/Design Skill/design.md`)
 - **Database**: **None**
@@ -28,10 +28,9 @@
 - **Type**: Express sub-app mounted by the hub at `/p/sniper-buddy/`
 - **Backend**: Express (mounted; no separate service)
 - **ORM**: Prisma
-- **Database**: SQLite (`Projects/Sniper Buddy/prisma/ballistics.db`)
-- **Env var**: `DATABASE_URL=file:./Projects/Sniper Buddy/prisma/ballistics.db`
+- **Database**: Postgres (Render Postgres in prod; Docker Postgres locally)
+- **Env var (local)**: `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/projects?schema=sniper_buddy`
 - **Notes**:
-  - Great fit for **read-only** or **rarely changing** data.
-  - If you want persistent user data (saved builds, users, analytics), migrate to **Postgres** (Render managed DB).
+  - We use **one Postgres database** and isolate each project using a dedicated **schema** via `?schema=<project_slug>`.
 
 
