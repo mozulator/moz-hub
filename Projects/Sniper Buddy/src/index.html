@@ -33,7 +33,6 @@
             </div>
             <div class="sb-header-right">
                 <span class="sb-pill"><span class="dot"></span><span>Online</span></span>
-                <span class="sb-pill"><span class="mono">S</span><span>Snipe mode</span></span>
             </div>
         </header>
 
@@ -99,7 +98,7 @@
             <aside class="sb-right card">
                 <div class="card-h">
                     <div class="card-h-title"><i class="fa-solid fa-table"></i><span>Quick reference</span></div>
-                    <button class="btn" style="width:auto" id="clearFavoritesBtn" onclick="clearAllFavorites()" title="Clear all favorites">
+                    <button class="btn hidden" style="width:auto" id="clearFavoritesBtn" onclick="clearAllFavorites()" title="Clear all favorites">
                         <i class="fa-solid fa-star-half-stroke"></i>
                         <span>Clear</span>
                     </button>
@@ -108,13 +107,14 @@
                     <table id="referenceTable">
                         <thead>
                             <tr>
+                                <th style="width: 42px;">Fav</th>
                                 <th>Range</th>
                                 <th>Mils</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="2" class="muted">Select weapon & ammo</td>
+                                <td colspan="3" class="muted">Select weapon & ammo</td>
                             </tr>
                         </tbody>
                     </table>

@@ -10,6 +10,7 @@ let previousWeapon = ''; // Track previous weapon for change detection
 let chart = null;
 let favorites = []; // Array of { distance, mils, weaponKey, ammoKey }
 let annotationPluginRegistered = false;
+let favoriteUiBound = false;
 
 // API Base URL (Sniper Buddy runs under /p/sniper-buddy/)
 const API_BASE = `${(window.__BASE_PATH__ || '').replace(/\/$/, '')}/api`;
@@ -157,8 +158,12 @@ function updateReferenceTableFavoriteStates() {
         const distance = parseInt(row.dataset.distance);
         if (isFavorited(distance)) {
             row.classList.add('row-favorited');
+            const icon = row.querySelector('.fav-btn i');
+            if (icon) icon.className = 'fa-solid fa-star';
         } else {
             row.classList.remove('row-favorited');
+            const icon = row.querySelector('.fav-btn i');
+            if (icon) icon.className = 'fa-regular fa-star';
         }
     });
 }
@@ -182,14 +187,17 @@ function updateClearFavoritesButton() {
 function getWeaponImagePath(weaponName) {
     // Map weapon names to their image files
     const imageMap = {
-        'AXMC .338 LM': '/assets/images/AXMC .338 LM.jpg',
-        'ORSIS T-5000M 7.62x51': '/assets/images/ORSIS T-5000M 7.62x51.jpg',
-        'Lobaev Arms DVL-10 7.62x51': '/assets/images/Lobaev Arms DVL-10 7.62x51.jpg',
-        'Sako TRG M10 .338': '/assets/images/Sako TRG M10 .338.jpg',
-        'SV-98 7.62x54R': '/assets/images/SV-98 7.62x54R.jpg'
+        'AXMC .338 LM': 'AXMC .338 LM.jpg',
+        'ORSIS T-5000M 7.62x51': 'ORSIS T-5000M 7.62x51.jpg',
+        'Lobaev Arms DVL-10 7.62x51': 'Lobaev Arms DVL-10 7.62x51.jpg',
+        'Sako TRG M10 .338': 'Sako TRG M10 .338.jpg',
+        'SV-98 7.62x54R': 'SV-98 7.62x54R.jpg'
     };
     
-    return imageMap[weaponName] || null;
+    const fileName = imageMap[weaponName];
+    if (!fileName) return null;
+    const base = (window.__BASE_PATH__ || '').replace(/\/$/, '');
+    return encodeURI(`${base}/assets/images/${fileName}`);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────────
@@ -410,7 +418,7 @@ function clearChartAndTable() {
     if (tableBody) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="2" class="text-center text-tertiary">
+                <td colspan="3" class="text-center text-tertiary">
                     Select ammunition
                 </td>
             </tr>
@@ -730,6 +738,11 @@ function updateReferenceTable() {
         row.dataset.distance = currentDistance;
         row.dataset.mils = adjustedMils.toFixed(1);
         row.innerHTML = `
+            <td class="fav-cell">
+                <button class="fav-btn" type="button" title="${isFav ? 'Unfavorite' : 'Favorite'}">
+                    <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+                </button>
+            </td>
             <td>${currentDistance}m</td>
             <td>${adjustedMils.toFixed(1)}</td>
         `;
@@ -745,6 +758,11 @@ function updateReferenceTable() {
                 interpolatedRow.dataset.distance = dist;
                 interpolatedRow.dataset.mils = interpolatedMils.toFixed(1);
                 interpolatedRow.innerHTML = `
+                    <td class="fav-cell">
+                        <button class="fav-btn" type="button" title="${isFavInterpolated ? 'Unfavorite' : 'Favorite'}">
+                            <i class="${isFavInterpolated ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+                        </button>
+                    </td>
                     <td>${dist}m</td>
                     <td>${interpolatedMils.toFixed(1)}</td>
                 `;
@@ -760,6 +778,32 @@ function updateReferenceTable() {
     if (typeof window.syncSnipeModeTable === 'function') {
         window.syncSnipeModeTable();
     }
+}
+
+function initializeFavoriteUI() {
+    if (favoriteUiBound) return;
+    favoriteUiBound = true;
+
+    // Click-to-favorite: star button toggles the distance as a favorite
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.fav-btn');
+        if (!btn) return;
+        const row = btn.closest('tr[data-distance]');
+        if (!row) return;
+
+        const distance = parseInt(row.dataset.distance);
+        const mils = parseFloat(row.dataset.mils);
+        if (!distance || Number.isNaN(mils)) return;
+
+        if (isFavorited(distance)) {
+            removeFavorite(distance);
+        } else {
+            addFavorite(distance, mils);
+        }
+
+        updateReferenceTableFavoriteStates();
+        updateClearFavoritesButton();
+    });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────────
@@ -813,6 +857,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('⚡ Sniper Buddy initializing...');
     registerAnnotationPlugin();
     loadFavorites();
+    initializeFavoriteUI();
     loadBallisticData();
 });
 
