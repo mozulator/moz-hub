@@ -1,0 +1,11 @@
+{
+  "slug": "obs-kappa-tracker",
+  "title": "OBS Kappa Tracker",
+  "description": "External project (opens in a new tab).",
+  "type": "redirect",
+  "url": "https://www.obs-kappa-tracker.com/",
+  "tags": ["external", "eft", "tarkov", "obs"],
+  "icon": "fa-arrow-up-right-from-square"
+}
+
+
