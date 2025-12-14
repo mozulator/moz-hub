@@ -5,7 +5,7 @@
   "description": "Personal project hub that mounts projects under a single website.",
   "license": "UNLICENSED",
   "engines": {
-    "node": ">=18.0.0"
+    "node": "22.x"
   },
   "scripts": {
     "build": "prisma generate --schema \"Projects/Sniper Buddy/prisma/schema.prisma\"",
