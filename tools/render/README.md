@@ -18,6 +18,7 @@ In Render:
 - **Account Settings → API Keys → Create API Key**
 
 Keep it secret. Do not commit it.
+Do not paste it into chat.
 
 ## 2) Set the API key in your shell (PowerShell)
 
@@ -38,6 +39,13 @@ Edit `tools/render/render.config.json` and fill in:
 - `serviceName` (your hub service on Render)
 - `postgresName` (db name)
 - `region`
+
+## Protected resources
+
+The CLI will **refuse** to operate on these names:
+- `kappa-db`
+- `kappa-db-copy`
+- `kappa-tracker`
 
 ## 4) Run automation
 

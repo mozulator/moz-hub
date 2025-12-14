@@ -6,6 +6,8 @@ const path = require('path');
 
 const API_BASE = 'https://api.render.com/v1';
 
+const PROTECTED_RESOURCE_NAMES = new Set(['kappa-db', 'kappa-db-copy', 'kappa-tracker']);
+
 function readConfig() {
   const configPath = path.join(__dirname, 'render.config.json');
   if (!fs.existsSync(configPath)) {
@@ -16,6 +18,16 @@ function readConfig() {
     );
   }
   return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+}
+
+function assertNotProtected(name, kind) {
+  if (!name) return;
+  if (PROTECTED_RESOURCE_NAMES.has(String(name).trim())) {
+    throw new Error(
+      `Refusing to operate on protected ${kind} "${name}".\n` +
+        `Protected resources: ${Array.from(PROTECTED_RESOURCE_NAMES).join(', ')}`
+    );
+  }
 }
 
 function mustEnv(name) {
@@ -102,6 +114,11 @@ async function cmdDoctor() {
   if (!cfg.ownerId) throw new Error('render.config.json missing ownerId');
   if (!cfg.serviceName) throw new Error('render.config.json missing serviceName');
   if (!cfg.postgresName) throw new Error('render.config.json missing postgresName');
+
+  // Safety rails
+  assertNotProtected(cfg.serviceName, 'service');
+  assertNotProtected(cfg.postgresName, 'Postgres instance');
+
   console.log('✓ Config loaded');
   console.log(`- serviceName: ${cfg.serviceName}`);
   console.log(`- postgresName: ${cfg.postgresName}`);
@@ -111,6 +128,8 @@ async function cmdDoctor() {
 
 async function cmdEnsurePostgres() {
   const cfg = readConfig();
+  assertNotProtected(cfg.postgresName, 'Postgres instance');
+
   const list = await listPostgres({ name: cfg.postgresName, ownerId: cfg.ownerId });
   if (list.length) {
     console.log(`✓ Postgres exists: ${list[0].name} (${list[0].id})`);
@@ -129,6 +148,8 @@ async function cmdEnsurePostgres() {
 
 async function cmdEnsureServiceEnv() {
   const cfg = readConfig();
+  assertNotProtected(cfg.serviceName, 'service');
+  assertNotProtected(cfg.postgresName, 'Postgres instance');
 
   const services = await listServices({ name: cfg.serviceName });
   if (!services.length) {
@@ -172,6 +193,7 @@ async function cmdEnsureServiceEnv() {
 
 async function cmdDeploy() {
   const cfg = readConfig();
+  assertNotProtected(cfg.serviceName, 'service');
   const services = await listServices({ name: cfg.serviceName });
   if (!services.length) throw new Error(`Service "${cfg.serviceName}" not found`);
   const service = services[0];
