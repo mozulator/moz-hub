@@ -1,0 +1,239 @@
+/* Component Styles */
+.result {
+    background: linear-gradient(135deg, var(--background-secondary), var(--background-primary));
+    color: var(--primary-cyan);
+    padding: var(--spacing-lg);
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-top: var(--spacing-md);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.result:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.chart-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    min-height: 250px;
+    background: var(--background-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm);
+}
+
+/* Reference Table - Card-Based Design for Better Readability */
+.reference-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    padding: 2px;
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--background-primary);
+    border-radius: var(--radius-sm);
+    flex: 1;
+}
+
+/* Individual Distance Cards */
+.distance-card {
+    display: grid;
+    grid-template-columns: 70px 1fr 80px;
+    align-items: center;
+    justify-items: center;
+    background: var(--background-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    transition: all 0.2s ease;
+    font-family: 'Courier New', 'Consolas', monospace;
+    min-height: 32px;
+}
+
+.distance-card:hover {
+    background: var(--primary-cyan-glow);
+    border-color: var(--border-accent);
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Major increment cards (every 50m) */
+.distance-card.major {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), var(--background-secondary));
+    border-color: var(--primary-cyan);
+    border-width: 2px;
+    position: relative;
+}
+
+.distance-card.major::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--primary-cyan), #0088cc);
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.distance-card.major:hover {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), var(--primary-cyan-glow));
+    box-shadow: var(--shadow-md);
+}
+
+/* Distance value styling */
+.distance-value {
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-weight: bold;
+    font-size: 0.75em;
+    color: var(--text-primary);
+    text-align: center;
+    justify-self: center;
+}
+
+.distance-card.major .distance-value {
+    color: var(--primary-cyan);
+    font-size: 0.8em;
+    text-shadow: var(--shadow-sm);
+}
+
+/* Distance label styling */
+.distance-label {
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-size: 0.6em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    justify-content: center;
+    justify-self: center;
+}
+
+.distance-label i {
+    color: var(--primary-cyan);
+    font-size: 0.65em;
+}
+
+/* Mills value styling */
+.mills-value {
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-weight: bold;
+    font-size: 0.85em;
+    color: var(--primary-cyan);
+    text-align: center;
+    justify-self: center;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+    background: rgba(0, 212, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    min-width: 50px;
+}
+
+.distance-card.major .mills-value {
+    font-size: 0.9em;
+    background: rgba(0, 212, 255, 0.2);
+    border-color: rgba(0, 212, 255, 0.4);
+    text-shadow: 0 0 12px rgba(0, 212, 255, 0.5);
+    min-width: 55px;
+}
+
+/* Empty state styling */
+.reference-card.empty-state {
+    background: var(--background-primary);
+    border: 2px dashed var(--border-primary);
+    color: var(--text-disabled);
+    font-style: italic;
+    cursor: default;
+    padding: var(--spacing-xxl);
+    text-align: center;
+    border-radius: var(--radius-sm);
+    font-size: 1.1em;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.empty-state i {
+    font-size: 2em;
+    color: var(--text-disabled);
+    opacity: 0.5;
+}
+
+.reference-card.empty-state:hover {
+    background: var(--background-primary);
+    transform: none;
+    border-color: var(--border-primary);
+    box-shadow: none;
+}
+
+/* Scrollbar styling */
+.reference-cards::-webkit-scrollbar {
+    width: 8px;
+}
+
+.reference-cards::-webkit-scrollbar-track {
+    background: var(--background-primary);
+    border-radius: var(--radius-sm);
+}
+
+.reference-cards::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, var(--primary-cyan), #0088cc);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-primary);
+}
+
+.reference-cards::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #33ddff, var(--primary-cyan));
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+/* Animation for newly added cards */
+@keyframes cardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.distance-card {
+    animation: cardSlideIn 0.3s ease;
+}
+
+/* Ballistic Table - Remove old table styles */
+.ballistic-table {
+    display: none; /* Hide the old table */
+}
+
+/* Interactive Effects */
+.chart-container:hover {
+    border-color: var(--border-accent);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Pulse Animation for Active Elements */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.active-element {
+    animation: pulse 2s infinite ease-in-out;
+} 

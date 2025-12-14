@@ -1,0 +1,11 @@
+{
+  "slug": "sniper-buddy",
+  "title": "Sniper Buddy",
+  "description": "Precision ballistics calculator with a clean, minimal interface.",
+  "type": "express",
+  "module": "./hub-app.js",
+  "tags": ["ballistics", "tarkov", "calculator", "sqlite", "prisma"],
+  "icon": "fa-crosshairs"
+}
+
+

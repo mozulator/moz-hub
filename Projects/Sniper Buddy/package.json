@@ -1,0 +1,77 @@
+{
+  "name": "sniper-buddy",
+  "version": "2.0.0",
+  "description": "Tactical ballistics calculator for precision shooting with dynamic weapon configurations and real-time calculations",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "serve-static": "python -m http.server 8080",
+    "build": "prisma generate",
+    "test": "echo 'No tests specified'",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:reset": "prisma migrate reset",
+    "db:studio": "prisma studio"
+  },
+  "keywords": [
+    "ballistics",
+    "sniper",
+    "tactical",
+    "calculator",
+    "shooting",
+    "precision",
+    "mil-dot",
+    "scope",
+    "tarkov",
+    "gaming",
+    "prisma",
+    "database"
+  ],
+  "author": "Sniper Buddy Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/sniper-buddy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/sniper-buddy/issues"
+  },
+  "homepage": "https://github.com/your-username/sniper-buddy#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "autoprefixer": "^10.4.21",
+    "daisyui": "^5.0.43",
+    "nodemon": "^3.0.2",
+    "postcss": "^8.5.6",
+    "prisma": "^5.7.1",
+    "tailwindcss": "^4.1.11"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "files": [
+    "src/",
+    "server/",
+    "prisma/",
+    "assets/",
+    "README.md",
+    "package.json"
+  ],
+  "directories": {
+    "lib": "src"
+  },
+  "config": {
+    "port": "3000"
+  }
+}
