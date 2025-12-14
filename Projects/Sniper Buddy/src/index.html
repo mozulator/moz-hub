@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sniper Buddy — Precision Ballistics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <link rel="stylesheet" href="css/output.css">
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         Full Width Application
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="app-fullwidth">
+        
+        <!-- ─────────────────────────────────────────────────────────────────────
+             Header Bar
+             ───────────────────────────────────────────────────────────────────── -->
+        <header class="app-header-bar">
+            <div class="app-logo">
+                <div class="app-logo-icon">
+                    <i class="fas fa-crosshairs"></i>
+                </div>
+                <div>
+                    <h1 class="app-title">Sniper Buddy</h1>
+                </div>
+            </div>
+            
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Connected</span>
+                <span class="kbd-hint ml-2">S</span>
+                <span class="text-tertiary">Snipe Mode</span>
+            </div>
+        </header>
+
+        <!-- ─────────────────────────────────────────────────────────────────────
+             Main Content - 3 Column Layout
+             ───────────────────────────────────────────────────────────────────── -->
+        <main class="main-fullwidth">
+            
+            <!-- ═══════════════════════════════════════════════════════════════
+                 Left Panel - Controls
+                 ═══════════════════════════════════════════════════════════════ -->
+            <aside class="panel-left">
+                
+                <!-- Weapon Configuration Card -->
+                <div class="card-compact">
+                    <div class="card-header-compact">
+                        <div class="card-header-icon accent">
+                            <i class="fas fa-crosshairs"></i>
+                        </div>
+                        <span class="card-title-sm">Weapon Setup</span>
+                    </div>
+                    <div class="card-body-sm">
+                        <div class="form-group-compact">
+                            <label class="form-label-sm">Weapon</label>
+                            <select id="weaponSelect" class="form-select-sm" onchange="updateWeaponData()">
+                                <option value="">Select...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group-compact">
+                            <label class="form-label-sm">Ammunition</label>
+                            <select id="ammoSelect" class="form-select-sm" onchange="updateWeaponData()">
+                                <option value="">Select...</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn-compact btn-secondary-compact" onclick="showBuildModal()">
+                            <i class="fas fa-sliders"></i>
+                            View Build
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Range Calculator Card -->
+                <div class="card-compact">
+                    <div class="card-header-compact">
+                        <div class="card-header-icon teal">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <span class="card-title-sm">Range Calculator</span>
+                    </div>
+                    <div class="card-body-sm">
+                        <div class="form-group-compact">
+                            <label class="form-label-sm">Distance (m)</label>
+                            <input type="number" 
+                                   id="distance" 
+                                   class="form-input-sm text-mono" 
+                                   placeholder="Enter..."
+                                   oninput="calculateFromDistance()">
+                        </div>
+                        
+                        <div class="result-display-compact">
+                            <div class="result-label-sm">Adjustment</div>
+                            <div id="distanceResult" class="result-placeholder">
+                                —
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </aside>
+
+            <!-- ═══════════════════════════════════════════════════════════════
+                 Center Panel - Ballistic Chart (Fills Space)
+                 ═══════════════════════════════════════════════════════════════ -->
+            <section class="panel-center">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <i class="fas fa-chart-line text-cyan"></i>
+                            Ballistic Trajectory
+                        </div>
+                        <div class="weapon-info-compact" id="weaponInfoDisplay">
+                            <span class="weapon-info-name" id="weaponDisplayName">No weapon selected</span>
+                            <span class="weapon-info-divider">•</span>
+                            <span id="ammoDisplayName">—</span>
+                            <span class="weapon-info-divider">•</span>
+                            <span class="weapon-info-badge" id="scopeDisplayValue">—</span>
+                        </div>
+                    </div>
+                    <div class="chart-area">
+                        <canvas id="ballisticChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════════
+                 Right Panel - Reference Table (Full Height)
+                 ═══════════════════════════════════════════════════════════════ -->
+            <aside class="panel-right">
+                <div class="reference-card">
+                    <div class="reference-header">
+                        <i class="fas fa-table"></i>
+                        <span>Quick Reference</span>
+                        <button class="clear-favorites-btn hidden" id="clearFavoritesBtn" onclick="clearAllFavorites()" title="Clear all favorites">
+                            <i class="fas fa-star-half-alt"></i>
+                        </button>
+                    </div>
+                    <div class="reference-body">
+                        <table class="reference-table" id="referenceTable">
+                            <thead>
+                                <tr>
+                                    <th>Range</th>
+                                    <th>Mils</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" class="text-center text-tertiary">
+                                        Select weapon & ammo
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </aside>
+            
+        </main>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         Snipe Mode FAB
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <button class="snipe-mode-fab" id="snipeModeBtn" onclick="toggleSnipeMode()">
+        <span class="snipe-mode-fab-icon">
+            <i class="fas fa-expand"></i>
+        </span>
+        <span>Snipe Mode</span>
+    </button>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         Snipe Mode Overlay
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="snipe-mode-overlay" id="snipeModeOverlay">
+        <header class="snipe-mode-header">
+            <div class="snipe-mode-title">
+                <div class="snipe-mode-title-icon">
+                    <i class="fas fa-crosshairs"></i>
+                </div>
+                <span>Snipe Mode</span>
+                <span class="text-tertiary text-mono" id="snipeModeWeaponName">—</span>
+            </div>
+            <button class="btn btn-secondary" onclick="toggleSnipeMode()">
+                <i class="fas fa-times"></i>
+                Exit
+                <span class="kbd-hint">Esc</span>
+            </button>
+        </header>
+        <div class="snipe-mode-body">
+            <table class="snipe-mode-table" id="snipeModeTable">
+                <thead>
+                    <tr>
+                        <th>Distance (m)</th>
+                        <th>Mil Adjustment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         Build Details Modal
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="modal-overlay" id="buildModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-sliders text-accent"></i>
+                    Build Details
+                </h2>
+                <button class="modal-close" onclick="closeBuildModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="buildContent">
+                <!-- Content populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBuildModal()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         JavaScript
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <script>
+        // Allows Sniper Buddy to run under a subpath (e.g. /p/sniper-buddy/)
+        (function () {
+            const p = window.location.pathname;
+            window.__BASE_PATH__ = p.endsWith('/') ? p.slice(0, -1) : p;
+        })();
+    </script>
+    <script src="js/ballistics.js"></script>
+    <script src="js/ui.js"></script>
+    <script>
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize weapon data if the function exists
+            if (typeof updateWeaponData === 'function') {
+                updateWeaponData();
+            }
+        });
+    </script>
+</body>
+</html>

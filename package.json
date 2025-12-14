@@ -1,0 +1,25 @@
+{
+  "name": "momcilo-project-hub",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Personal project hub that mounts projects under a single website.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "prisma generate --schema \"Projects/Sniper Buddy/prisma/schema.prisma\"",
+    "start": "node server.js",
+    "dev": "set NODE_ENV=development&& node server.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.7.1"
+  }
+}
+
+

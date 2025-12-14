@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion-Style UI Mockup</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Workspace</h2>
+            </div>
+            
+            <div class="sidebar-section">
+                <button class="sidebar-item active">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="sidebar-item">
+                    <i class="fas fa-file"></i>
+                    <span>Pages</span>
+                </button>
+                <button class="sidebar-item">
+                    <i class="far fa-clock"></i>
+                    <span>Recent</span>
+                </button>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">
+                    <span>Favorites</span>
+                    <button class="sidebar-collapse-toggle" data-section="favorites">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="sidebar-section-content" data-content="favorites">
+                    <button class="sidebar-item nested">
+                        <span>Project Alpha</span>
+                    </button>
+                    <button class="sidebar-item nested">
+                        <span>Project Beta</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">
+                    <span>Private</span>
+                    <button class="sidebar-collapse-toggle" data-section="private">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="sidebar-section-content collapsed" data-content="private">
+                    <button class="sidebar-item nested">
+                        <span>Notes</span>
+                    </button>
+                    <button class="sidebar-item nested">
+                        <span>Ideas</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 class="page-title">UI Components Showcase</h1>
+                <p class="page-subtitle">A comprehensive display of Notion-style design elements</p>
+            </header>
+
+            <div class="content-body">
+                <!-- Typography Section -->
+                <section class="content-section">
+                    <h2 class="section-title">Typography</h2>
+                    <div class="card">
+                        <h3 class="card-title">Headings</h3>
+                        <h1 class="typography-h1">Heading 1</h1>
+                        <h2 class="typography-h2">Heading 2</h2>
+                        <h3 class="typography-h3">Heading 3</h3>
+                        <h4 class="typography-h4">Heading 4</h4>
+                        <p class="typography-body">Body text with comfortable line height and spacing. This demonstrates the clean, readable typography that makes Notion-style interfaces so pleasant to use.</p>
+                        <p class="typography-secondary">Secondary text color for less prominent information.</p>
+                    </div>
+                </section>
+
+                <!-- Buttons Section -->
+                <section class="content-section">
+                    <h2 class="section-title">Buttons</h2>
+                    <div class="card">
+                        <h3 class="card-title">Button Variants</h3>
+                        <div class="button-group">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                <span>Primary Button</span>
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-plus"></i>
+                                <span>Secondary Button</span>
+                            </button>
+                            <button class="btn btn-text">
+                                <span>Text Button</span>
+                            </button>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" disabled>Disabled Button</button>
+                            <button class="btn btn-icon-only" aria-label="Add">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Inputs Section -->
+                <section class="content-section">
+                    <h2 class="section-title">Inputs</h2>
+                    <div class="card">
+                        <h3 class="card-title">Form Elements</h3>
+                        <div class="form-group">
+                            <label for="text-input" class="form-label">Text Input</label>
+                            <input type="text" id="text-input" class="form-input" placeholder="Enter text here">
+                        </div>
+                        <div class="form-group">
+                            <label for="email-input" class="form-label">Email Input</label>
+                            <input type="email" id="email-input" class="form-input" placeholder="name@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="textarea-input" class="form-label">Textarea</label>
+                            <textarea id="textarea-input" class="form-textarea" rows="4" placeholder="Enter longer text here..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="select-input" class="form-label">Select</label>
+                            <select id="select-input" class="form-select">
+                                <option value="">Choose an option</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="checkbox-input">
+                                <span>Checkbox option</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="checkbox-input" checked>
+                                <span>Checked option</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="radio-label">
+                                <input type="radio" name="radio-group" class="radio-input">
+                                <span>Radio option 1</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="radio-group" class="radio-input" checked>
+                                <span>Radio option 2</span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cards Section -->
+                <section class="content-section">
+                    <h2 class="section-title">Cards & Panels</h2>
+                    <div class="card-grid">
+                        <div class="card">
+                            <h3 class="card-title">Simple Card</h3>
+                            <p class="card-content">This is a simple card with white background and subtle border. It demonstrates the clean, minimal aesthetic.</p>
+                        </div>
+                        <div class="card card-elevated">
+                            <h3 class="card-title">Elevated Card</h3>
+                            <p class="card-content">This card has a subtle shadow for depth while maintaining the calm, minimal design.</p>
+                        </div>
+                        <div class="card card-accent">
+                            <h3 class="card-title">Accent Card</h3>
+                            <p class="card-content">A card with a soft beige accent background, showing optional color usage.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Navigation Components -->
+                <section class="content-section">
+                    <h2 class="section-title">Navigation</h2>
+                    <div class="card">
+                        <h3 class="card-title">Breadcrumbs</h3>
+                        <nav class="breadcrumbs">
+                            <a href="#" class="breadcrumb-item">Home</a>
+                            <span class="breadcrumb-separator">/</span>
+                            <a href="#" class="breadcrumb-item">Section</a>
+                            <span class="breadcrumb-separator">/</span>
+                            <span class="breadcrumb-item active">Current Page</span>
+                        </nav>
+                    </div>
+                </section>
+
+                <!-- Lists Section -->
+                <section class="content-section">
+                    <h2 class="section-title">Lists</h2>
+                    <div class="card">
+                        <h3 class="card-title">Unordered List</h3>
+                        <ul class="styled-list">
+                            <li>First item with clean styling</li>
+                            <li>Second item demonstrating spacing</li>
+                            <li>Third item showing the minimal aesthetic</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Ordered List</h3>
+                        <ol class="styled-list">
+                            <li>Step one in the process</li>
+                            <li>Step two follows naturally</li>
+                            <li>Step three completes the sequence</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- Tables Section -->
+                <section class="content-section">
+                    <h2 class="section-title">Tables</h2>
+                    <div class="card">
+                        <div class="table-container">
+                            <table class="styled-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Project Alpha</td>
+                                        <td><span class="badge">Active</span></td>
+                                        <td>2024-01-15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Project Beta</td>
+                                        <td><span class="badge">Pending</span></td>
+                                        <td>2024-01-20</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Project Gamma</td>
+                                        <td><span class="badge">Completed</span></td>
+                                        <td>2024-01-25</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Badges & Tags Section -->
+                <section class="content-section">
+                    <h2 class="section-title">Badges & Tags</h2>
+                    <div class="card">
+                        <h3 class="card-title">Status Badges</h3>
+                        <div class="badge-group">
+                            <span class="badge">Default</span>
+                            <span class="badge badge-primary">Primary</span>
+                            <span class="badge badge-success">Success</span>
+                            <span class="badge badge-warning">Warning</span>
+                            <span class="badge badge-error">Error</span>
+                            <span class="badge badge-info">Info</span>
+                            <span class="badge badge-neutral">Neutral</span>
+                            <span class="badge badge-pending">Pending</span>
+                            <span class="badge badge-active">Active</span>
+                            <span class="badge badge-completed">Completed</span>
+                            <span class="badge badge-draft">Draft</span>
+                            <span class="badge badge-published">Published</span>
+                            <span class="badge badge-archived">Archived</span>
+                            <span class="badge badge-online">Online</span>
+                            <span class="badge badge-offline">Offline</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tree View Section -->
+                <section class="content-section">
+                    <h2 class="section-title">Tree View</h2>
+                    <div class="card">
+                        <h3 class="card-title">File System Tree</h3>
+                        <div class="tree-view">
+                            <ul class="tree-list">
+                                <li class="tree-item">
+                                    <div class="tree-node">
+                                        <button class="tree-toggle">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                        <i class="fas fa-folder tree-folder"></i>
+                                        <span class="tree-label">Documents</span>
+                                    </div>
+                                    <ul class="tree-children">
+                                        <li class="tree-item">
+                                            <div class="tree-node">
+                                                <span class="tree-spacer"></span>
+                                                <i class="fas fa-folder tree-folder"></i>
+                                                <span class="tree-label">Projects</span>
+                                            </div>
+                                        </li>
+                                        <li class="tree-item">
+                                            <div class="tree-node">
+                                                <span class="tree-spacer"></span>
+                                                <i class="fas fa-file tree-file"></i>
+                                                <span class="tree-label">readme.txt</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="tree-item">
+                                    <div class="tree-node">
+                                        <button class="tree-toggle">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                        <i class="fas fa-folder tree-folder"></i>
+                                        <span class="tree-label">Images</span>
+                                    </div>
+                                    <ul class="tree-children collapsed">
+                                        <li class="tree-item">
+                                            <div class="tree-node">
+                                                <span class="tree-spacer"></span>
+                                                <i class="fas fa-folder tree-folder"></i>
+                                                <span class="tree-label">2024</span>
+                                            </div>
+                                        </li>
+                                        <li class="tree-item">
+                                            <div class="tree-node">
+                                                <span class="tree-spacer"></span>
+                                                <i class="fas fa-folder tree-folder"></i>
+                                                <span class="tree-label">2023</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="tree-item">
+                                    <div class="tree-node">
+                                        <button class="tree-toggle">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                        <i class="fas fa-folder tree-folder"></i>
+                                        <span class="tree-label">Videos</span>
+                                    </div>
+                                    <ul class="tree-children collapsed">
+                                        <li class="tree-item">
+                                            <div class="tree-node">
+                                                <span class="tree-spacer"></span>
+                                                <i class="fas fa-folder tree-folder"></i>
+                                                <span class="tree-label">Tutorials</span>
+                                            </div>
+                                        </li>
+                                        <li class="tree-item">
+                                            <div class="tree-node">
+                                                <span class="tree-spacer"></span>
+                                                <i class="fas fa-file tree-file"></i>
+                                                <span class="tree-label">intro.mp4</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="tree-item">
+                                    <div class="tree-node">
+                                        <span class="tree-spacer"></span>
+                                        <i class="fas fa-file tree-file"></i>
+                                        <span class="tree-label">config.json</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dividers Section -->
+                <section class="content-section">
+                    <h2 class="section-title">Dividers</h2>
+                    <div class="card">
+                        <p>Content above the divider</p>
+                        <div class="divider"></div>
+                        <p>Content below the divider</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

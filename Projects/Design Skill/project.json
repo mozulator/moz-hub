@@ -1,0 +1,12 @@
+{
+  "slug": "design-skill",
+  "title": "Design Skill (Notion UI)",
+  "description": "Notion-style UI mock + design tokens used as the visual baseline for the hub.",
+  "type": "static",
+  "staticDir": ".",
+  "index": "index.html",
+  "tags": ["design", "ui", "notion", "html", "css", "js"],
+  "icon": "fa-palette"
+}
+
+

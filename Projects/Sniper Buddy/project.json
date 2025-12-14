@@ -1,0 +1,11 @@
+{
+  "slug": "sniper-buddy",
+  "title": "Sniper Buddy",
+  "description": "Precision ballistics calculator (Express + Prisma). Hosted inside the hub.",
+  "type": "express",
+  "module": "./hub-app.js",
+  "tags": ["node", "express", "prisma", "sqlite", "ballistics"],
+  "icon": "fa-crosshairs"
+}
+
+
