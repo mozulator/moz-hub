@@ -1,7 +1,7 @@
 {
   "slug": "obs-kappa-tracker",
   "title": "OBS Kappa Tracker",
-  "description": "External project (opens in a new tab).",
+  "description": "Track your journey to Kappa with a modern quest tracking platform featuring smart organization, detailed item tracking, global leaderboards, and optional OBS streaming integration. Built for every Tarkov player - from casual solo players to competitive streamers.",
   "type": "redirect",
   "url": "https://www.obs-kappa-tracker.com/",
   "tags": ["external", "eft", "tarkov", "obs"],
