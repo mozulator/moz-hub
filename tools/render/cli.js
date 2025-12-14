@@ -70,6 +70,10 @@ async function listServices({ name }) {
   return await api('GET', `/services${qs}`);
 }
 
+async function listOwners() {
+  return await api('GET', `/owners`);
+}
+
 async function listPostgres({ name, ownerId }) {
   const params = [];
   if (name) params.push(`name=${encodeURIComponent(name)}`);
@@ -111,7 +115,9 @@ function ensureSchemaParam(connectionString, schema) {
 async function cmdDoctor() {
   const cfg = readConfig();
   mustEnv('RENDER_API_KEY');
-  if (!cfg.ownerId) throw new Error('render.config.json missing ownerId');
+  if (!cfg.ownerId) {
+    throw new Error('render.config.json missing ownerId (run: node tools/render/cli.js list-owners)');
+  }
   if (!cfg.serviceName) throw new Error('render.config.json missing serviceName');
   if (!cfg.postgresName) throw new Error('render.config.json missing postgresName');
 
@@ -124,6 +130,19 @@ async function cmdDoctor() {
   console.log(`- postgresName: ${cfg.postgresName}`);
   console.log(`- region: ${cfg.region}`);
   console.log('✓ Render API key present');
+}
+
+async function cmdListOwners() {
+  mustEnv('RENDER_API_KEY');
+  const owners = await listOwners();
+  console.log(
+    owners.map((o) => ({
+      id: o.id,
+      name: o.name,
+      type: o.type
+    }))
+  );
+  console.log('\nCopy the workspace you want into tools/render/render.config.json as ownerId.\n');
 }
 
 async function cmdEnsurePostgres() {
@@ -207,6 +226,7 @@ async function main() {
     if (!cmd || cmd === 'help' || cmd === '--help' || cmd === '-h') {
       console.log(`Usage:
   node tools/render/cli.js doctor
+  node tools/render/cli.js list-owners
   node tools/render/cli.js ensure-postgres
   node tools/render/cli.js ensure-service-env
   node tools/render/cli.js deploy
@@ -215,6 +235,7 @@ async function main() {
     }
 
     if (cmd === 'doctor') return await cmdDoctor();
+    if (cmd === 'list-owners') return await cmdListOwners();
     if (cmd === 'ensure-postgres') return await cmdEnsurePostgres();
     if (cmd === 'ensure-service-env') return await cmdEnsureServiceEnv();
     if (cmd === 'deploy') return await cmdDeploy();

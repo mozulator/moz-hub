@@ -51,6 +51,7 @@ The CLI will **refuse** to operate on these names:
 
 ```powershell
 node tools/render/cli.js doctor
+node tools/render/cli.js list-owners
 node tools/render/cli.js ensure-postgres
 node tools/render/cli.js ensure-service-env
 node tools/render/cli.js deploy
