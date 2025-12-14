@@ -1,0 +1,11 @@
+{
+  "slug": "__PROJECT_SLUG__",
+  "title": "__PROJECT_NAME__",
+  "description": "Express sub-app mounted inside the hub (no DB by default).",
+  "type": "express",
+  "module": "./hub-app.js",
+  "tags": ["node", "express"],
+  "icon": "fa-server"
+}
+
+

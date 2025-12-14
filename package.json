@@ -10,7 +10,8 @@
   "scripts": {
     "build": "prisma generate --schema \"Projects/Sniper Buddy/prisma/schema.prisma\"",
     "start": "node server.js",
-    "dev": "set NODE_ENV=development&& node server.js"
+    "dev": "set NODE_ENV=development&& node server.js",
+    "new": "node tools/new-project.js"
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",

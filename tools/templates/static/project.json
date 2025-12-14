@@ -1,0 +1,12 @@
+{
+  "slug": "__PROJECT_SLUG__",
+  "title": "__PROJECT_NAME__",
+  "description": "Describe your project.",
+  "type": "static",
+  "staticDir": ".",
+  "index": "index.html",
+  "tags": ["html", "css", "js"],
+  "icon": "fa-folder"
+}
+
+

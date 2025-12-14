@@ -11,5 +11,7 @@ pnpm-debug.log*
 
 # Prisma
 *.db-journal
+Projects/**/generated/prisma/
+Projects/**/generated/prisma/**
 
 
