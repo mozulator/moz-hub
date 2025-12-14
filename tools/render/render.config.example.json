@@ -1,0 +1,18 @@
+{
+  "ownerId": "RENDER_OWNER_ID_WORKSPACE",
+  "serviceName": "momcilo-project-hub",
+  "servicePlan": "starter",
+  "serviceType": "web_service",
+  "serviceEnv": "node",
+  "repo": "https://github.com/mozulator/projects",
+  "branch": "main",
+  "region": "oregon",
+  "postgresName": "momcilo-projects",
+  "postgresPlan": "free",
+  "postgresVersion": "16",
+  "appSchemas": {
+    "sniper-buddy": "sniper_buddy"
+  }
+}
+
+

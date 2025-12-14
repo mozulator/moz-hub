@@ -14,4 +14,7 @@ pnpm-debug.log*
 Projects/**/generated/prisma/
 Projects/**/generated/prisma/**
 
+# Render automation local config (contains no secrets, but per-user values)
+tools/render/render.config.json
+
 
