@@ -1,0 +1,467 @@
+<%- include('partials/head', { title: 'AI Prompt' }) %>
+<%- include('partials/nav') %>
+
+<main class="container page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">AI Extraction Prompt</h1>
+      <p class="page-description">Customize how AI extracts and categorizes your bank statements</p>
+    </div>
+    
+    <div class="controls-row">
+      <% if (lastUpdated) { %>
+        <span class="text-sm text-muted">
+          Last updated: <%= new Date(lastUpdated).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+        </span>
+      <% } %>
+      
+      <button id="save-btn" onclick="savePrompt()" class="btn btn-primary" disabled>
+        <i data-lucide="save"></i>
+        <span>Save Changes</span>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Info Card -->
+  <div class="card info-card">
+    <div class="info-card-icon">
+      <i data-lucide="info"></i>
+    </div>
+    <div class="info-card-content">
+      <p class="info-card-title">How it works</p>
+      <p class="info-card-text">
+        This prompt is sent to OpenAI when you import a PDF. Use <code>{{CATEGORIES}}</code> placeholder to include your payment categories automatically.
+        The AI will extract payments and assign categories based on your instructions.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Editor Card -->
+  <div class="card editor-card">
+    <div class="editor-header">
+      <div class="editor-tabs">
+        <button class="editor-tab active" onclick="switchTab('edit')">
+          <i data-lucide="edit-3"></i>
+          Edit
+        </button>
+        <button class="editor-tab" onclick="switchTab('preview')">
+          <i data-lucide="eye"></i>
+          Preview
+        </button>
+      </div>
+      
+      <div class="editor-actions">
+        <button onclick="resetPrompt()" class="btn btn-ghost btn-sm">
+          <i data-lucide="rotate-ccw"></i>
+          Reset to Default
+        </button>
+      </div>
+    </div>
+    
+    <div id="edit-panel" class="editor-panel">
+      <textarea 
+        id="prompt-editor" 
+        class="prompt-editor"
+        spellcheck="false"
+        placeholder="Enter your extraction prompt..."
+      ><%= prompt %></textarea>
+    </div>
+    
+    <div id="preview-panel" class="editor-panel hidden">
+      <div id="preview-content" class="prompt-preview"></div>
+    </div>
+    
+    <div class="editor-footer">
+      <div class="editor-stats">
+        <span id="char-count">0</span> characters
+        <span class="text-muted">•</span>
+        <span id="line-count">0</span> lines
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Toast notification -->
+<div id="toast" class="toast hidden">
+  <i data-lucide="check-circle" class="toast-icon"></i>
+  <span id="toast-message">Saved successfully</span>
+</div>
+
+<style>
+  .info-card {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent);
+    margin-bottom: var(--space-4);
+  }
+  
+  .info-card-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    color: var(--accent);
+  }
+  
+  .info-card-content {
+    flex: 1;
+  }
+  
+  .info-card-title {
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+  }
+  
+  .info-card-text {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  
+  .info-card-text code {
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--accent);
+  }
+  
+  .editor-card {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  .editor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-primary);
+    background: var(--bg-secondary);
+  }
+  
+  .editor-tabs {
+    display: flex;
+    gap: var(--space-1);
+  }
+  
+  .editor-tab {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+  }
+  
+  .editor-tab:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
+  
+  .editor-tab.active {
+    color: var(--accent);
+    background: var(--accent-subtle);
+  }
+  
+  .editor-tab svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .editor-actions {
+    display: flex;
+    gap: var(--space-2);
+  }
+  
+  .editor-panel {
+    flex: 1;
+    min-height: 500px;
+  }
+  
+  .prompt-editor {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    padding: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    border: none;
+    resize: vertical;
+    outline: none;
+  }
+  
+  .prompt-editor::placeholder {
+    color: var(--text-muted);
+  }
+  
+  .prompt-preview {
+    padding: var(--space-4);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    font-family: var(--font-body);
+  }
+  
+  .prompt-preview h1,
+  .prompt-preview h2,
+  .prompt-preview h3 {
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-2);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+  
+  .prompt-preview h2 {
+    font-size: var(--text-lg);
+    border-bottom: 1px solid var(--border-primary);
+    padding-bottom: var(--space-2);
+  }
+  
+  .prompt-preview code {
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+  
+  .prompt-preview pre {
+    background: var(--bg-tertiary);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    margin: var(--space-3) 0;
+  }
+  
+  .prompt-preview pre code {
+    background: transparent;
+    padding: 0;
+  }
+  
+  .prompt-preview ul,
+  .prompt-preview ol {
+    padding-left: var(--space-6);
+    margin: var(--space-2) 0;
+  }
+  
+  .prompt-preview li {
+    margin: var(--space-1) 0;
+  }
+  
+  .prompt-preview strong {
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+  
+  .editor-footer {
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--border-primary);
+    background: var(--bg-secondary);
+  }
+  
+  .editor-stats {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+  
+  .btn-sm {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+  }
+  
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: var(--space-6);
+    right: var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--success);
+    color: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+  
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  .toast-icon {
+    width: 20px;
+    height: 20px;
+  }
+</style>
+
+<script>
+  const BT_BASE_PATH = window.__BT_BASE_PATH__ || '';
+
+  const editor = document.getElementById('prompt-editor');
+  const saveBtn = document.getElementById('save-btn');
+  let originalPrompt = editor.value;
+  let hasChanges = false;
+  
+  // Update stats
+  function updateStats() {
+    const text = editor.value;
+    document.getElementById('char-count').textContent = text.length.toLocaleString();
+    document.getElementById('line-count').textContent = text.split('\n').length.toLocaleString();
+  }
+  
+  // Check for changes
+  function checkChanges() {
+    hasChanges = editor.value !== originalPrompt;
+    saveBtn.disabled = !hasChanges;
+    if (hasChanges) {
+      saveBtn.innerHTML = '<i data-lucide="save"></i><span>Save Changes</span>';
+    }
+    lucide.createIcons();
+  }
+  
+  // Tab switching
+  function switchTab(tab) {
+    document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+    event.target.closest('.editor-tab').classList.add('active');
+    
+    if (tab === 'edit') {
+      document.getElementById('edit-panel').classList.remove('hidden');
+      document.getElementById('preview-panel').classList.add('hidden');
+    } else {
+      document.getElementById('edit-panel').classList.add('hidden');
+      document.getElementById('preview-panel').classList.remove('hidden');
+      renderPreview();
+    }
+    lucide.createIcons();
+  }
+  
+  // Simple markdown preview
+  function renderPreview() {
+    let text = editor.value;
+    
+    // Basic markdown conversion
+    text = text
+      // Headers
+      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+      // Bold
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Code blocks
+      .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+      // Inline code
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      // Lists
+      .replace(/^- (.*$)/gm, '<li>$1</li>')
+      // Line breaks
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>');
+    
+    document.getElementById('preview-content').innerHTML = '<p>' + text + '</p>';
+  }
+  
+  // Save prompt
+  async function savePrompt() {
+    if (!hasChanges) return;
+    
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i><span>Saving...</span>';
+    lucide.createIcons();
+    
+    try {
+      const response = await fetch(BT_BASE_PATH + '/prompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: editor.value })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        originalPrompt = editor.value;
+        hasChanges = false;
+        showToast('Prompt saved successfully');
+        saveBtn.innerHTML = '<i data-lucide="check"></i><span>Saved</span>';
+        saveBtn.disabled = true;
+      } else {
+        showToast('Failed to save: ' + result.error, true);
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i data-lucide="save"></i><span>Save Changes</span>';
+      }
+    } catch (err) {
+      showToast('Network error: ' + err.message, true);
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<i data-lucide="save"></i><span>Save Changes</span>';
+    }
+    lucide.createIcons();
+  }
+  
+  // Reset to default
+  async function resetPrompt() {
+    if (!confirm('Reset to default prompt? Your changes will be lost.')) return;
+    
+    // Fetch default from seed by re-seeding just the prompt
+    // For now, we'll just reload the page which will show current DB value
+    window.location.reload();
+  }
+  
+  // Show toast
+  function showToast(message, isError = false) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    
+    toastMessage.textContent = message;
+    toast.style.background = isError ? 'var(--error)' : 'var(--success)';
+    toast.classList.remove('hidden');
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.classList.add('hidden'), 300);
+    }, 3000);
+  }
+  
+  // Event listeners
+  editor.addEventListener('input', () => {
+    updateStats();
+    checkChanges();
+  });
+  
+  // Keyboard shortcut for save
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      if (hasChanges) savePrompt();
+    }
+  });
+  
+  // Initial stats
+  updateStats();
+</script>
+
+<%- include('partials/footer') %>
+

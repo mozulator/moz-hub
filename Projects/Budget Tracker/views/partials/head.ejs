@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title + ' — Budget Tracker' : 'Budget Tracker' %></title>
+  
+  <!-- Custom Styles (includes Sinter font faces) -->
+  <link rel="stylesheet" href="<%= basePath %>/css/styles.css">
+  
+  <!-- Theme initialization (prevent flash) -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(theme);
+    })();
+  </script>
+
+  <!-- Base path for hub mounting (e.g. /p/budget-tracker). Empty when running standalone. -->
+  <script>
+    window.__BT_BASE_PATH__ = "<%= basePath || '' %>";
+  </script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>

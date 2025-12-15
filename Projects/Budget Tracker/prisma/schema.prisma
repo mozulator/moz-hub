@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("BUDGET_TRACKER_DATABASE_URL")
+}
+
+// Single user for authentication
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// Payment categories/types (e.g., Subscriptions, Food & Groceries, etc.)
+model PaymentType {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  icon        String    // Lucide icon name
+  color       String    // Tailwind color identifier
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  payments Payment[]
+  services Service[]
+}
+
+// Recurring services with unsubscribe links (e.g., Netflix, Spotify)
+model Service {
+  id             String   @id @default(uuid())
+  name           String
+  unsubscribeUrl String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  paymentTypeId String
+  paymentType   PaymentType @relation(fields: [paymentTypeId], references: [id])
+  payments      Payment[]
+
+  @@unique([paymentTypeId, name])
+}
+
+// App settings (prompts, configurations)
+model Setting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String   // Can store long text like prompts
+  updatedAt DateTime @updatedAt
+}
+
+// Individual payment transactions
+model Payment {
+  id        String   @id @default(uuid())
+  date      DateTime
+  recipient String
+  amount    Float    // Amount in RSD
+  rawData   String?  // Original row data for traceability (JSON)
+  monthKey  String   // e.g., "2025-11" for fast monthly queries
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  paymentTypeId String?
+  paymentType   PaymentType? @relation(fields: [paymentTypeId], references: [id])
+  serviceId     String?
+  service       Service?     @relation(fields: [serviceId], references: [id])
+
+  // Indexes for performance
+  @@index([monthKey])
+  @@index([paymentTypeId])
+  @@index([date])
+}

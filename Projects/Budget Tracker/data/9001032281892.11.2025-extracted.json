@@ -1,0 +1,526 @@
+{
+  "payments": [
+    {
+      "date": "2025-11-01",
+      "recipient": "ALTA GROUP",
+      "amount": 11200
+    },
+    {
+      "date": "2025-11-01",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 2691.59
+    },
+    {
+      "date": "2025-11-01",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 1080.48
+    },
+    {
+      "date": "2025-11-01",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 10802.39
+    },
+    {
+      "date": "2025-11-01",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 537.84
+    },
+    {
+      "date": "2025-11-01",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 2689.19
+    },
+    {
+      "date": "2025-11-01",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 2689.19
+    },
+    {
+      "date": "2025-11-01",
+      "recipient": "PAYPAL *RENEEBRUNET",
+      "amount": 31757.67
+    },
+    {
+      "date": "2025-11-01",
+      "recipient": "KASPERSKY NEXWAY",
+      "amount": 4309.91
+    },
+    {
+      "date": "2025-11-02",
+      "recipient": "TEHNOMEDIA CENTAR MP 3",
+      "amount": 69999
+    },
+    {
+      "date": "2025-11-02",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 540.24
+    },
+    {
+      "date": "2025-11-02",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 2700
+    },
+    {
+      "date": "2025-11-02",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 540.24
+    },
+    {
+      "date": "2025-11-03",
+      "recipient": "GOOGLE *ADS8266991029",
+      "amount": 5096.26
+    },
+    {
+      "date": "2025-11-04",
+      "recipient": "BTMI2041 DM FILIJALA J05M NOVI BEOGRAD",
+      "amount": 1817
+    },
+    {
+      "date": "2025-11-04",
+      "recipient": "MAXI 767",
+      "amount": 2452.9
+    },
+    {
+      "date": "2025-11-04",
+      "recipient": "MAXI 767",
+      "amount": 1208.8
+    },
+    {
+      "date": "2025-11-04",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 2707.01
+    },
+    {
+      "date": "2025-11-04",
+      "recipient": "STAMBENA ZAJEDNICA",
+      "amount": 5807.16
+    },
+    {
+      "date": "2025-11-05",
+      "recipient": "MAXI 767",
+      "amount": 5555.83
+    },
+    {
+      "date": "2025-11-05",
+      "recipient": "PREMIUM PET WEST 65",
+      "amount": 2592
+    },
+    {
+      "date": "2025-11-05",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 2714.29
+    },
+    {
+      "date": "2025-11-05",
+      "recipient": "OPENAI *CHATGPT SUBSCR",
+      "amount": 2126.05
+    },
+    {
+      "date": "2025-11-05",
+      "recipient": "OPENAI",
+      "amount": 531.81
+    },
+    {
+      "date": "2025-11-05",
+      "recipient": "RENDER.COM",
+      "amount": 6207.68
+    },
+    {
+      "date": "2025-11-06",
+      "recipient": "MAXI 767",
+      "amount": 1841.49
+    },
+    {
+      "date": "2025-11-06",
+      "recipient": "GOOGLE *GOOGLE ONE",
+      "amount": 2721.47
+    },
+    {
+      "date": "2025-11-06",
+      "recipient": "GOOGLE *YOUTUBEPREMIUM",
+      "amount": 858.34
+    },
+    {
+      "date": "2025-11-06",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 1087.63
+    },
+    {
+      "date": "2025-11-07",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 2717.77
+    },
+    {
+      "date": "2025-11-08",
+      "recipient": "MAXI 767",
+      "amount": 1572.02
+    },
+    {
+      "date": "2025-11-08",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 1089.88
+    },
+    {
+      "date": "2025-11-08",
+      "recipient": "XSOLLA _TWITCH",
+      "amount": 5876.71
+    },
+    {
+      "date": "2025-11-08",
+      "recipient": "HOSTINGER* HOSTINGER.C",
+      "amount": 1061.07
+    },
+    {
+      "date": "2025-11-09",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 1089.88
+    },
+    {
+      "date": "2025-11-10",
+      "recipient": "ELEVENLABS.IO",
+      "amount": 1167.9
+    },
+    {
+      "date": "2025-11-12",
+      "recipient": "WOLT DOO",
+      "amount": 5138
+    },
+    {
+      "date": "2025-11-12",
+      "recipient": "MAXI 767",
+      "amount": 3353.43
+    },
+    {
+      "date": "2025-11-12",
+      "recipient": "WOLT DOO",
+      "amount": 1642.6
+    },
+    {
+      "date": "2025-11-12",
+      "recipient": "YETTEL ERACUN APP",
+      "amount": 3708.6
+    },
+    {
+      "date": "2025-11-12",
+      "recipient": "MAXI 767",
+      "amount": 2442.35
+    },
+    {
+      "date": "2025-11-12",
+      "recipient": "GOOGLE *YOUTUBE MEMBER",
+      "amount": 208.81
+    },
+    {
+      "date": "2025-11-12",
+      "recipient": "XSOLLA _TWITCHBITS",
+      "amount": 8691.82
+    },
+    {
+      "date": "2025-11-12",
+      "recipient": "KLINGAI.COM",
+      "amount": 530.41
+    },
+    {
+      "date": "2025-11-12",
+      "recipient": "STAMBENA ZAJEDNICA",
+      "amount": 5807.16
+    },
+    {
+      "date": "2025-11-13",
+      "recipient": "YANDEX GO",
+      "amount": 787
+    },
+    {
+      "date": "2025-11-13",
+      "recipient": "YANDEX GO",
+      "amount": 788
+    },
+    {
+      "date": "2025-11-13",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 541.21
+    },
+    {
+      "date": "2025-11-14",
+      "recipient": "MP428 FOB",
+      "amount": 4100
+    },
+    {
+      "date": "2025-11-14",
+      "recipient": "MP428 FOB",
+      "amount": 5092.45
+    },
+    {
+      "date": "2025-11-14",
+      "recipient": "WOLT DOO",
+      "amount": 2045.4
+    },
+    {
+      "date": "2025-11-14",
+      "recipient": "MAXI 767",
+      "amount": 890.94
+    },
+    {
+      "date": "2025-11-14",
+      "recipient": "XSOLLA _TWITCHBITS",
+      "amount": 189.59
+    },
+    {
+      "date": "2025-11-14",
+      "recipient": "EPS AD BEOGRAD",
+      "amount": 6211.32
+    },
+    {
+      "date": "2025-11-14",
+      "recipient": "JKP INFOSTAN TEHNOLOGIJE",
+      "amount": 3220.97
+    },
+    {
+      "date": "2025-11-15",
+      "recipient": "JKP INFOSTAN TEHNOLOGIJE",
+      "amount": 540.58
+    },
+    {
+      "date": "2025-11-15",
+      "recipient": "BTMI2041 DM FILIJALA J05M NOVI BEOGRAD",
+      "amount": 3397
+    },
+    {
+      "date": "2025-11-15",
+      "recipient": "PRODAVNICA 22",
+      "amount": 3757
+    },
+    {
+      "date": "2025-11-15",
+      "recipient": "JKP INFOSTAN TEHNOLOGIJE",
+      "amount": 625.96
+    },
+    {
+      "date": "2025-11-15",
+      "recipient": "JKP INFOSTAN TEHNOLOGIJE",
+      "amount": 3298.28
+    },
+    {
+      "date": "2025-11-15",
+      "recipient": "DUNAV OSIGURANJE A.D.O",
+      "amount": 5784.56
+    },
+    {
+      "date": "2025-11-16",
+      "recipient": "YANDEX GO",
+      "amount": 664
+    },
+    {
+      "date": "2025-11-16",
+      "recipient": "BENU PHARMACIES 449",
+      "amount": 338.98
+    },
+    {
+      "date": "2025-11-16",
+      "recipient": "CURSOR.COM",
+      "amount": 10635.81
+    },
+    {
+      "date": "2025-11-17",
+      "recipient": "STEAM PURCHASE",
+      "amount": 5999.44
+    },
+    {
+      "date": "2025-11-17",
+      "recipient": "STEAM PURCHASE",
+      "amount": 599.94
+    },
+    {
+      "date": "2025-11-17",
+      "recipient": "PAYPAL *TANGIA",
+      "amount": 538.75
+    },
+    {
+      "date": "2025-11-18",
+      "recipient": "WOLT DOO",
+      "amount": 1789
+    },
+    {
+      "date": "2025-11-18",
+      "recipient": "PREMIUM PET WEST 65",
+      "amount": 3654
+    },
+    {
+      "date": "2025-11-18",
+      "recipient": "MAXI 774",
+      "amount": 452.46
+    },
+    {
+      "date": "2025-11-18",
+      "recipient": "TWITCH.TV",
+      "amount": 1053.5
+    },
+    {
+      "date": "2025-11-19",
+      "recipient": "WOLT DOO",
+      "amount": 1844
+    },
+    {
+      "date": "2025-11-19",
+      "recipient": "HANGAR FOOD MARKET",
+      "amount": 4800
+    },
+    {
+      "date": "2025-11-19",
+      "recipient": "TAJKO",
+      "amount": 100000
+    },
+    {
+      "date": "2025-11-19",
+      "recipient": "MOMCILO STOJKOVIC",
+      "amount": 20000
+    },
+    {
+      "date": "2025-11-21",
+      "recipient": "MAXI 767",
+      "amount": 1467.95
+    },
+    {
+      "date": "2025-11-21",
+      "recipient": "MAXI 767",
+      "amount": 3733.35
+    },
+    {
+      "date": "2025-11-21",
+      "recipient": "TWITCH.TV",
+      "amount": 210.13
+    },
+    {
+      "date": "2025-11-21",
+      "recipient": "TWITCH.TV",
+      "amount": 42130.29
+    },
+    {
+      "date": "2025-11-21",
+      "recipient": "TWITCH.TV",
+      "amount": 2106.09
+    },
+    {
+      "date": "2025-11-21",
+      "recipient": "TWITCH.TV",
+      "amount": 210.13
+    },
+    {
+      "date": "2025-11-22",
+      "recipient": "TWITCH.TV",
+      "amount": 1063.99
+    },
+    {
+      "date": "2025-11-23",
+      "recipient": "WOLT DOO",
+      "amount": 834.7
+    },
+    {
+      "date": "2025-11-24",
+      "recipient": "TWITCH.TV",
+      "amount": 21217.34
+    },
+    {
+      "date": "2025-11-25",
+      "recipient": "MAXI 767",
+      "amount": 3024.45
+    },
+    {
+      "date": "2025-11-25",
+      "recipient": "MAXI 767",
+      "amount": 964.72
+    },
+    {
+      "date": "2025-11-26",
+      "recipient": "WOLT DOO",
+      "amount": 993.7
+    },
+    {
+      "date": "2025-11-26",
+      "recipient": "MAXI 767",
+      "amount": 4143.89
+    },
+    {
+      "date": "2025-11-27",
+      "recipient": "WOLT DOO",
+      "amount": 946
+    },
+    {
+      "date": "2025-11-27",
+      "recipient": "MAXI 767",
+      "amount": 690.95
+    },
+    {
+      "date": "2025-11-28",
+      "recipient": "BEOGRAD AMCN0001/MULTICARD 01",
+      "amount": 150
+    },
+    {
+      "date": "2025-11-28",
+      "recipient": "BEOGRAD AMCN0001/MULTICARD 01",
+      "amount": 5000
+    },
+    {
+      "date": "2025-11-29",
+      "recipient": "YANDEX GO",
+      "amount": 773
+    },
+    {
+      "date": "2025-11-29",
+      "recipient": "YANDEX GO",
+      "amount": 725
+    },
+    {
+      "date": "2025-11-29",
+      "recipient": "WOLT DOO",
+      "amount": 776.4
+    },
+    {
+      "date": "2025-11-29",
+      "recipient": "TWITCH.TV",
+      "amount": 13698.54
+    },
+    {
+      "date": "2025-11-29",
+      "recipient": "TWITCH.TV",
+      "amount": 210.36
+    },
+    {
+      "date": "2025-11-29",
+      "recipient": "CURSOR.COM",
+      "amount": 2119.21
+    },
+    {
+      "date": "2025-11-29",
+      "recipient": "TWITCH.TV",
+      "amount": 6831.24
+    },
+    {
+      "date": "2025-11-29",
+      "recipient": "TWITCH.TV",
+      "amount": 210.36
+    },
+    {
+      "date": "2025-11-30",
+      "recipient": "TWITCH.TV",
+      "amount": 210.36
+    },
+    {
+      "date": "2025-11-30",
+      "recipient": "TWITCH.TV",
+      "amount": 210.36
+    },
+    {
+      "date": "2025-11-30",
+      "recipient": "NAKNADA ZA TR",
+      "amount": 410
+    }
+  ],
+  "metadata": {
+    "documentType": "Bank Statement",
+    "accountHolder": "MOMČILO STOJKOVIĆ",
+    "statementPeriod": "2025-11-01 to 2025-11-30",
+    "currency": "RSD",
+    "totalTransactions": 100
+  }
+}

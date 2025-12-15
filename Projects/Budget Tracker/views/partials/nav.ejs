@@ -1,0 +1,52 @@
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <!-- Logo -->
+    <a href="<%= basePath %>/overview" class="nav-brand">
+      <div class="nav-logo">
+        <i data-lucide="wallet"></i>
+      </div>
+      <span class="nav-title">Budget</span>
+    </a>
+    
+    <!-- Navigation Links (right-aligned) -->
+    <div class="nav-links">
+      <a href="<%= basePath %>/overview" class="nav-link <%= currentPath === '/overview' ? 'active' : '' %>">
+        <i data-lucide="layout-grid"></i>
+        <span>Overview</span>
+      </a>
+      
+      <a href="<%= basePath %>/payments" class="nav-link <%= currentPath === '/payments' ? 'active' : '' %>">
+        <i data-lucide="receipt"></i>
+        <span>Payments</span>
+      </a>
+      
+      <a href="<%= basePath %>/payment-types" class="nav-link <%= currentPath.startsWith('/payment-types') ? 'active' : '' %>">
+        <i data-lucide="tags"></i>
+        <span>Categories</span>
+      </a>
+      
+      <a href="<%= basePath %>/compare" class="nav-link <%= currentPath === '/compare' ? 'active' : '' %>">
+        <i data-lucide="git-compare"></i>
+        <span>Compare</span>
+      </a>
+      
+      <a href="<%= basePath %>/prompt" class="nav-link <%= currentPath === '/prompt' ? 'active' : '' %>">
+        <i data-lucide="sparkles"></i>
+        <span>AI Prompt</span>
+      </a>
+
+      <% if (isAuthenticated) { %>
+        <form method="POST" action="<%= basePath %>/logout" style="display:inline;">
+          <button type="submit" class="nav-link" style="background:transparent; border:0; cursor:pointer;">
+            <i data-lucide="log-out"></i>
+            <span>Logout</span>
+          </button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</nav>
+
+<!-- Spacer for fixed nav -->
+<div class="nav-spacer"></div>

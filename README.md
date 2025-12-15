@@ -90,7 +90,12 @@ This repo includes `render.yaml` (Render Blueprint).
 
 ### Required env vars (Render)
 
-- None (until you add a project that needs a database)
+- **Budget Tracker (private, mounted at `/p/budget-tracker/`)**
+  - `BUDGET_TRACKER_DATABASE_URL`: Postgres connection string (recommended with `?schema=budget_tracker`)
+  - `BUDGET_TRACKER_SESSION_SECRET`: session secret for `express-session`
+  - `BUDGET_TRACKER_ADMIN_USERNAME`: seed-only admin username
+  - `BUDGET_TRACKER_ADMIN_PASSWORD`: seed-only admin password
+  - `OPENAI_API_KEY` (optional): enables PDF import + AI summarize; without it those endpoints return 503
 
 ## GitHub setup
 

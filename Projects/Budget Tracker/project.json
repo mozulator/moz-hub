@@ -1,0 +1,11 @@
+{
+  "slug": "budget-tracker",
+  "title": "Budget Tracker",
+  "description": "Single-user budget tracker with PDF import, categorization, and monthly comparisons.",
+  "type": "express",
+  "module": "./hub-app.js",
+  "tags": ["finance", "budget", "prisma", "postgres", "ejs"],
+  "icon": "fa-wallet"
+}
+
+

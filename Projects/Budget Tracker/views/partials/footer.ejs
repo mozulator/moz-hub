@@ -1,0 +1,175 @@
+  <!-- Theme Toggle Button -->
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+    <i data-lucide="sun" class="icon-sun"></i>
+    <i data-lucide="moon" class="icon-moon"></i>
+  </button>
+
+  <!-- Initialize Lucide Icons + Page Preloading -->
+  <script>
+    lucide.createIcons();
+
+    const BT_BASE_PATH = window.__BT_BASE_PATH__ || '';
+    
+    // Theme toggle functionality
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      // Add transition class for smooth color change
+      html.classList.add('transitioning');
+      
+      // Switch theme
+      html.classList.remove('light', 'dark');
+      html.classList.add(newTheme);
+      
+      // Save to localStorage
+      localStorage.setItem('theme', newTheme);
+      
+      // Re-initialize icons for the toggle button
+      lucide.createIcons();
+      
+      // Remove transition class after color change
+      setTimeout(() => {
+        html.classList.remove('transitioning');
+      }, 200);
+    }
+    
+    // Initialize theme from localStorage on page load
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(savedTheme);
+    }
+    
+    // Page Preloading System for instant navigation
+    (function() {
+      const pageCache = new Map();
+      const preloadedUrls = new Set();
+      
+      // Pages to preload
+      const pagesToPreload = [
+        `${BT_BASE_PATH}/overview`,
+        `${BT_BASE_PATH}/payments`,
+        `${BT_BASE_PATH}/payment-types`,
+        `${BT_BASE_PATH}/compare`,
+        `${BT_BASE_PATH}/prompt`
+      ];
+      
+      // Initialize on DOM ready
+      window.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+        lucide.createIcons();
+        
+        // Preload all main pages immediately
+        preloadAllPages();
+      });
+      
+      // Preload all pages on startup
+      function preloadAllPages() {
+        pagesToPreload.forEach(url => {
+          if (!preloadedUrls.has(url) && url !== window.location.pathname) {
+            preloadPage(url);
+          }
+        });
+      }
+      
+      // Preload a single page
+      async function preloadPage(url) {
+        if (preloadedUrls.has(url)) return;
+        preloadedUrls.add(url);
+        
+        try {
+          const response = await fetch(url, {
+            credentials: 'same-origin',
+            headers: { 'X-Preload': 'true' }
+          });
+          
+          if (response.ok) {
+            const html = await response.text();
+            pageCache.set(url, {
+              html: html,
+              timestamp: Date.now()
+            });
+          }
+        } catch (e) {
+          // Silently fail - will use normal navigation
+          preloadedUrls.delete(url);
+        }
+      }
+      
+      // Handle link clicks for instant navigation
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href]');
+        if (!link) return;
+        
+        const href = link.getAttribute('href');
+        // Skip external links, anchors, special links, and query params
+        if (!href || 
+            href.startsWith('#') || 
+            href.startsWith('http') || 
+            href.startsWith('javascript:') || 
+            link.target === '_blank') return;
+        
+        // Extract base path (without query params)
+        const basePath = href.split('?')[0];
+        
+        // Check if we have this page cached
+        const cached = pageCache.get(basePath);
+        
+        if (cached && pagesToPreload.includes(basePath)) {
+          e.preventDefault();
+          
+          // Update URL without reload
+          history.pushState({}, '', href);
+          
+          // Replace page content instantly
+          document.open();
+          document.write(cached.html);
+          document.close();
+          
+          // Re-run initialization
+          initTheme();
+          lucide.createIcons();
+          
+          // Refresh cache for this page in background
+          preloadedUrls.delete(basePath);
+          preloadPage(basePath);
+        }
+        // If not cached, let normal navigation happen
+      });
+      
+      // Handle browser back/forward with cache
+      window.addEventListener('popstate', () => {
+        const basePath = window.location.pathname;
+        const cached = pageCache.get(basePath);
+        
+        if (cached && pagesToPreload.includes(basePath)) {
+          document.open();
+          document.write(cached.html);
+          document.close();
+          initTheme();
+          lucide.createIcons();
+        } else {
+          // Fallback to full reload
+          window.location.reload();
+        }
+      });
+      
+      // Also preload on hover for any non-cached links
+      document.addEventListener('mouseover', (e) => {
+        const link = e.target.closest('a[href]');
+        if (!link) return;
+        
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('http')) return;
+        
+        const basePath = href.split('?')[0];
+        if (pagesToPreload.includes(basePath)) {
+          preloadPage(basePath);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

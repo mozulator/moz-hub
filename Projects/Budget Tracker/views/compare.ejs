@@ -1,0 +1,627 @@
+<%- include('partials/head', { title: 'Compare Months' }) %>
+<%- include('partials/nav') %>
+
+<%
+// Helper functions for colors
+function getColorHex(color) {
+  const colors = {
+    rose: '#e11d48', emerald: '#059669', sky: '#0284c7', amber: '#d97706',
+    violet: '#7c3aed', red: '#dc2626', fuchsia: '#c026d3', slate: '#475569',
+  };
+  return colors[color] || '#71717a';
+}
+function getColorBg(color) {
+  const colors = {
+    rose: '#ffe4e6', emerald: '#d1fae5', sky: '#e0f2fe', amber: '#fef3c7',
+    violet: '#ede9fe', red: '#fee2e2', fuchsia: '#fae8ff', slate: '#f1f5f9',
+  };
+  return colors[color] || '#f4f4f5';
+}
+%>
+
+<main class="container page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Compare Months</h1>
+      <p class="page-description">See how your spending changed between two months</p>
+    </div>
+    
+    <button id="summarize-btn" onclick="summarizeComparison()" class="btn btn-primary" <%= month1 && month2 ? '' : 'disabled' %>>
+      <i data-lucide="sparkles"></i>
+      <span>Summarize with AI</span>
+    </button>
+  </div>
+  
+  <!-- Month Selectors -->
+  <div class="compare-selectors">
+    <div class="compare-selector">
+      <label class="form-label">First Month</label>
+      <div class="select-wrapper">
+        <select id="month1-selector" onchange="updateComparison()" class="select">
+          <option value="">Select month...</option>
+          <% availableMonths.forEach(m => { %>
+            <option value="<%= m.value %>" <%= month1 === m.value ? 'selected' : '' %>><%= m.label %></option>
+          <% }) %>
+        </select>
+        <div class="select-icon">
+          <i data-lucide="chevron-down"></i>
+        </div>
+      </div>
+    </div>
+    
+    <div class="compare-vs">
+      <i data-lucide="arrow-left-right"></i>
+    </div>
+    
+    <div class="compare-selector">
+      <label class="form-label">Second Month</label>
+      <div class="select-wrapper">
+        <select id="month2-selector" onchange="updateComparison()" class="select">
+          <option value="">Select month...</option>
+          <% availableMonths.forEach(m => { %>
+            <option value="<%= m.value %>" <%= month2 === m.value ? 'selected' : '' %>><%= m.label %></option>
+          <% }) %>
+        </select>
+        <div class="select-icon">
+          <i data-lucide="chevron-down"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <% if (month1 && month2) { %>
+    <!-- Total Comparison -->
+    <div class="compare-totals">
+      <div class="compare-total-card">
+        <p class="compare-total-label"><%= month1Label %></p>
+        <p class="compare-total-value"><%= formatCurrency(total1) %></p>
+      </div>
+      
+      <div class="compare-diff-card <%= totalDiff > 0 ? 'diff-up' : totalDiff < 0 ? 'diff-down' : '' %>">
+        <% if (totalDiff !== 0) { %>
+          <i data-lucide="<%= totalDiff > 0 ? 'trending-up' : 'trending-down' %>"></i>
+          <span class="compare-diff-value"><%= totalDiff > 0 ? '+' : '' %><%= formatCurrency(totalDiff) %></span>
+          <span class="compare-diff-percent">(<%= totalDiff > 0 ? '+' : '' %><%= totalPercent %>%)</span>
+        <% } else { %>
+          <i data-lucide="minus"></i>
+          <span class="compare-diff-value">No change</span>
+        <% } %>
+      </div>
+      
+      <div class="compare-total-card">
+        <p class="compare-total-label"><%= month2Label %></p>
+        <p class="compare-total-value"><%= formatCurrency(total2) %></p>
+      </div>
+    </div>
+    
+    <!-- Category Comparison Table -->
+    <div class="card card-table">
+      <div class="data-grid">
+        <div class="data-grid-header">
+          <div class="data-col compare-col-category">Category</div>
+          <div class="data-col compare-col-amount"><%= month1Label %></div>
+          <div class="data-col compare-col-amount"><%= month2Label %></div>
+          <div class="data-col compare-col-diff">Difference</div>
+        </div>
+        <div class="data-grid-body">
+          <% comparison.forEach(cat => { %>
+            <div class="data-grid-row">
+              <div class="data-col compare-col-category">
+                <div class="compare-category-info">
+                  <div class="category-icon category-icon-sm" style="background-color: <%= getColorBg(cat.color) %>">
+                    <i data-lucide="<%= cat.icon %>" style="color: <%= getColorHex(cat.color) %>"></i>
+                  </div>
+                  <span class="font-medium"><%= cat.name %></span>
+                </div>
+              </div>
+              <div class="data-col compare-col-amount">
+                <span class="data-amount"><%= formatCurrency(cat.amount1) %></span>
+              </div>
+              <div class="data-col compare-col-amount">
+                <span class="data-amount"><%= formatCurrency(cat.amount2) %></span>
+              </div>
+              <div class="data-col compare-col-diff">
+                <% if (cat.diff !== 0) { %>
+                  <span class="compare-diff-badge <%= cat.diff > 0 ? 'diff-up' : 'diff-down' %>">
+                    <i data-lucide="<%= cat.diff > 0 ? 'arrow-up' : 'arrow-down' %>"></i>
+                    <%= cat.diff > 0 ? '+' : '' %><%= formatCurrency(cat.diff) %>
+                  </span>
+                <% } else { %>
+                  <span class="compare-diff-badge diff-neutral">
+                    <i data-lucide="minus"></i>
+                    No change
+                  </span>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+    
+  <% } else { %>
+    <!-- Empty State -->
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i data-lucide="git-compare"></i>
+      </div>
+      <h3 class="empty-title">Select two months to compare</h3>
+      <p class="empty-description">Choose a month from each dropdown above to see how your spending changed.</p>
+    </div>
+  <% } %>
+</main>
+
+<!-- AI Summary Modal -->
+<div id="summary-modal" class="modal-overlay">
+  <div class="modal-backdrop" onclick="closeSummaryModal()"></div>
+  <div class="modal-container">
+    <div class="modal modal-lg" id="summary-modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <i data-lucide="sparkles" class="modal-title-icon"></i>
+          AI Budget Analysis
+        </h2>
+        <button onclick="closeSummaryModal()" class="btn btn-ghost btn-icon">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Loading State -->
+        <div id="summary-loading" class="summary-loading">
+          <div class="summary-loading-spinner">
+            <i data-lucide="loader-2" class="animate-spin"></i>
+          </div>
+          <p class="summary-loading-text">Analyzing your spending patterns...</p>
+          <p class="summary-loading-hint">AI is comparing your monthly expenses</p>
+        </div>
+        
+        <!-- Summary Content -->
+        <div id="summary-content" class="summary-content hidden">
+          <div id="summary-text" class="summary-text"></div>
+        </div>
+        
+        <!-- Error State -->
+        <div id="summary-error" class="summary-error hidden">
+          <div class="summary-error-icon">
+            <i data-lucide="alert-circle"></i>
+          </div>
+          <p class="summary-error-text">Failed to generate summary</p>
+          <p id="summary-error-msg" class="summary-error-hint"></p>
+        </div>
+      </div>
+      <div class="modal-footer" id="summary-footer" style="display: none;">
+        <button onclick="closeSummaryModal()" class="btn btn-primary">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .compare-selectors {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+  
+  .compare-selector {
+    flex: 1;
+  }
+  
+  .compare-selector .select {
+    width: 100%;
+  }
+  
+  .compare-vs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    color: var(--text-muted);
+    flex-shrink: 0;
+    margin-bottom: 2px;
+  }
+  
+  .compare-vs svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .compare-totals {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+  
+  .compare-total-card {
+    flex: 1;
+    padding: var(--space-6);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-xl);
+    text-align: center;
+  }
+  
+  .compare-total-label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-muted);
+    margin-bottom: var(--space-2);
+  }
+  
+  .compare-total-value {
+    font-size: var(--text-2xl);
+    font-family: var(--font-money);
+    font-weight: var(--weight-bold);
+    font-feature-settings: "tnum" 1;
+  }
+  
+  .compare-diff-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-4) var(--space-6);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-xl);
+    flex-shrink: 0;
+    min-width: 160px;
+  }
+  
+  .compare-diff-card svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .compare-diff-card.diff-up {
+    background: var(--error-bg);
+    color: var(--error);
+  }
+  
+  .compare-diff-card.diff-down {
+    background: var(--success-bg);
+    color: var(--success);
+  }
+  
+  .compare-diff-value {
+    font-size: var(--text-lg);
+    font-family: var(--font-money);
+    font-weight: var(--weight-bold);
+    font-feature-settings: "tnum" 1;
+  }
+  
+  .compare-diff-percent {
+    font-size: var(--text-sm);
+    opacity: 0.8;
+  }
+  
+  /* Table columns */
+  .compare-col-category {
+    flex: 2;
+    min-width: 200px;
+  }
+  
+  .compare-col-amount {
+    width: 180px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  
+  .compare-col-diff {
+    width: 180px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  
+  .compare-category-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  
+  .category-icon-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+  }
+  
+  .category-icon-sm svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .compare-diff-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    font-family: var(--font-money);
+    font-feature-settings: "tnum" 1;
+    border-radius: var(--radius-md);
+  }
+  
+  .compare-diff-badge svg {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .compare-diff-badge.diff-up {
+    background: var(--error-bg);
+    color: var(--error);
+  }
+  
+  .compare-diff-badge.diff-down {
+    background: var(--success-bg);
+    color: var(--success);
+  }
+  
+  .compare-diff-badge.diff-neutral {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+  }
+  
+  /* Modal styles */
+  .modal-lg {
+    max-width: 600px;
+    max-height: 50vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal-lg .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(50vh - 140px); /* Account for header and footer */
+  }
+  
+  .modal-title-icon {
+    width: 20px;
+    height: 20px;
+    display: inline;
+    vertical-align: middle;
+    margin-right: var(--space-2);
+  }
+  
+  .summary-loading {
+    padding: var(--space-8) var(--space-6);
+    text-align: center;
+  }
+  
+  .summary-loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--space-4);
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    border-radius: var(--radius-xl);
+  }
+  
+  .summary-loading-spinner svg {
+    width: 32px;
+    height: 32px;
+    color: white;
+  }
+  
+  .summary-loading-text {
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+  }
+  
+  .summary-loading-hint {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+  
+  .summary-content {
+    padding: var(--space-2);
+  }
+  
+  .summary-text {
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+  
+  .summary-text h2, .summary-text h3 {
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-2);
+  }
+  
+  .summary-text h2:first-child, .summary-text h3:first-child {
+    margin-top: 0;
+  }
+  
+  .summary-text p {
+    margin-bottom: var(--space-3);
+    color: var(--text-secondary);
+  }
+  
+  .summary-text ul, .summary-text ol {
+    margin-bottom: var(--space-3);
+    padding-left: var(--space-5);
+  }
+  
+  .summary-text li {
+    margin-bottom: var(--space-1);
+    color: var(--text-secondary);
+  }
+  
+  .summary-text strong {
+    color: var(--text-primary);
+    font-weight: var(--weight-semibold);
+  }
+  
+  .summary-error {
+    padding: var(--space-8);
+    text-align: center;
+  }
+  
+  .summary-error-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto var(--space-4);
+    background: var(--error-bg);
+    border-radius: var(--radius-xl);
+    color: var(--error);
+  }
+  
+  .summary-error-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .summary-error-text {
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+  }
+  
+  .summary-error-hint {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+</style>
+
+<script>
+  const BT_BASE_PATH = window.__BT_BASE_PATH__ || '';
+
+  // Comparison data for AI summarization
+  const comparisonData = <%- JSON.stringify({
+    month1: month1,
+    month2: month2,
+    month1Label: month1Label || '',
+    month2Label: month2Label || '',
+    total1: total1 || 0,
+    total2: total2 || 0,
+    comparison: comparison || []
+  }) %>;
+  
+  function updateComparison() {
+    const month1 = document.getElementById('month1-selector').value;
+    const month2 = document.getElementById('month2-selector').value;
+    
+    let url = BT_BASE_PATH + '/compare';
+    if (month1 || month2) {
+      const params = new URLSearchParams();
+      if (month1) params.set('month1', month1);
+      if (month2) params.set('month2', month2);
+      url += '?' + params.toString();
+    }
+    window.location.href = url;
+  }
+  
+  function openSummaryModal() {
+    const modal = document.getElementById('summary-modal');
+    const content = document.getElementById('summary-modal-content');
+    modal.classList.add('active');
+    setTimeout(() => content.classList.add('active'), 10);
+    lucide.createIcons();
+  }
+  
+  function closeSummaryModal() {
+    const modal = document.getElementById('summary-modal');
+    const content = document.getElementById('summary-modal-content');
+    content.classList.remove('active');
+    setTimeout(() => {
+      modal.classList.remove('active');
+      // Reset state
+      document.getElementById('summary-loading').classList.remove('hidden');
+      document.getElementById('summary-content').classList.add('hidden');
+      document.getElementById('summary-error').classList.add('hidden');
+      document.getElementById('summary-footer').style.display = 'none';
+    }, 200);
+  }
+  
+  async function summarizeComparison() {
+    if (!comparisonData.month1 || !comparisonData.month2) return;
+    
+    openSummaryModal();
+    
+    try {
+      const response = await fetch(BT_BASE_PATH + '/compare/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(comparisonData)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Show summary
+        document.getElementById('summary-loading').classList.add('hidden');
+        document.getElementById('summary-content').classList.remove('hidden');
+        document.getElementById('summary-text').innerHTML = formatMarkdown(result.summary);
+        document.getElementById('summary-footer').style.display = 'flex';
+      } else {
+        // Show error
+        document.getElementById('summary-loading').classList.add('hidden');
+        document.getElementById('summary-error').classList.remove('hidden');
+        document.getElementById('summary-error-msg').textContent = result.error || 'Please try again later';
+        document.getElementById('summary-footer').style.display = 'flex';
+      }
+      
+      lucide.createIcons();
+      
+    } catch (err) {
+      document.getElementById('summary-loading').classList.add('hidden');
+      document.getElementById('summary-error').classList.remove('hidden');
+      document.getElementById('summary-error-msg').textContent = 'Network error: ' + err.message;
+      document.getElementById('summary-footer').style.display = 'flex';
+      lucide.createIcons();
+    }
+  }
+  
+  // Simple markdown to HTML converter
+  function formatMarkdown(text) {
+    return text
+      // Headers
+      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+      // Bold
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Bullet lists
+      .replace(/^- (.*$)/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
+      // Paragraphs
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^(?!<[hulo])/gm, '<p>')
+      .replace(/(?<![>])$/gm, '</p>')
+      // Clean up
+      .replace(/<p><\/p>/g, '')
+      .replace(/<p>(<[hulo])/g, '$1')
+      .replace(/(<\/[hulo][^>]*>)<\/p>/g, '$1');
+  }
+  
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSummaryModal();
+  });
+</script>
+
+<%- include('partials/footer') %>
+

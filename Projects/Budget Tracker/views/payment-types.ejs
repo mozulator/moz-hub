@@ -1,0 +1,408 @@
+<%- include('partials/head', { title: 'Categories' }) %>
+<%- include('partials/nav') %>
+
+<%
+// Helper functions for colors
+function getColorHex(color) {
+  const colors = {
+    rose: '#e11d48', emerald: '#059669', sky: '#0284c7', amber: '#d97706',
+    violet: '#7c3aed', red: '#dc2626', fuchsia: '#c026d3', slate: '#475569',
+  };
+  return colors[color] || '#71717a';
+}
+function getColorBg(color) {
+  const colors = {
+    rose: '#ffe4e6', emerald: '#d1fae5', sky: '#e0f2fe', amber: '#fef3c7',
+    violet: '#ede9fe', red: '#fee2e2', fuchsia: '#fae8ff', slate: '#f1f5f9',
+  };
+  return colors[color] || '#f4f4f5';
+}
+
+// Available colors for selection
+const availableColors = ['rose', 'emerald', 'sky', 'amber', 'violet', 'red', 'fuchsia', 'slate'];
+// Available icons for selection
+const availableIcons = ['tv', 'shopping-cart', 'car', 'zap', 'gamepad-2', 'heart-pulse', 'shopping-bag', 'landmark', 'home', 'plane', 'gift', 'coffee', 'music', 'book', 'briefcase', 'credit-card'];
+%>
+
+<main class="container page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Categories</h1>
+      <p class="page-description">Organize your spending into custom categories</p>
+    </div>
+    
+    <!-- Add Category Button -->
+    <button onclick="openAddModal()" class="btn btn-primary">
+      <i data-lucide="plus"></i>
+      <span>Add Category</span>
+    </button>
+  </div>
+  
+  <!-- Payment Types Grid -->
+  <div class="grid grid-cols-1 grid-cols-2 grid-cols-3">
+    <% paymentTypes.forEach((pt, index) => { %>
+      <div class="card card-hover category-card">
+        
+        <!-- Header -->
+        <div class="category-card-header">
+          <div class="category-icon" style="background-color: <%= getColorBg(pt.color) %>">
+            <i data-lucide="<%= pt.icon %>" style="color: <%= getColorHex(pt.color) %>"></i>
+          </div>
+          
+          <!-- Actions -->
+          <div class="card-actions">
+            <button 
+              onclick="openEditModal('<%= pt.id %>', '<%= pt.name %>', '<%= pt.icon %>', '<%= pt.color %>', '<%= pt.description || '' %>')"
+              class="btn btn-ghost btn-icon"
+              title="Edit">
+              <i data-lucide="pencil"></i>
+            </button>
+            <button 
+              onclick="openDeleteModal('<%= pt.id %>', '<%= pt.name %>', <%= pt.paymentCount %>)"
+              class="btn btn-ghost btn-icon btn-danger"
+              title="Delete">
+              <i data-lucide="trash-2"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Content -->
+        <a href="<%= basePath %>/payment-types/<%= pt.id %>">
+          <h3 class="category-name"><%= pt.name %></h3>
+          <% if (pt.description) { %>
+            <p class="text-sm text-muted truncate mb-3"><%= pt.description %></p>
+          <% } %>
+        </a>
+        
+        <!-- Stats -->
+        <div class="category-stats-row">
+          <div>
+            <p class="stat-label">Payments</p>
+            <p class="text-lg font-bold"><%= pt.paymentCount %></p>
+          </div>
+          <div class="stat-divider"></div>
+          <div>
+            <p class="stat-label">Total</p>
+            <p class="text-lg font-bold"><%= formatCurrency(pt.totalAmount) %></p>
+          </div>
+        </div>
+        
+        <!-- View Details Link -->
+      <a href="<%= basePath %>/payment-types/<%= pt.id %>" class="category-view-link">
+          <span>View details</span>
+          <i data-lucide="arrow-right"></i>
+        </a>
+      </div>
+    <% }) %>
+  </div>
+  
+  <% if (paymentTypes.length === 0) { %>
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i data-lucide="tags"></i>
+      </div>
+      <h3 class="empty-title">No categories yet</h3>
+      <p class="empty-description">Create your first category to start organizing your spending.</p>
+      <button onclick="openAddModal()" class="btn btn-primary">
+        <i data-lucide="plus"></i>
+        <span>Add Category</span>
+      </button>
+    </div>
+  <% } %>
+</main>
+
+<!-- Add/Edit Modal -->
+<div id="category-modal" class="modal-overlay">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  
+  <div class="modal-container">
+    <div class="modal" id="modal-content">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 id="modal-title" class="modal-title">Add Category</h2>
+        <button onclick="closeModal()" class="btn btn-ghost btn-icon">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      
+      <!-- Body -->
+      <form id="category-form" class="modal-body">
+        <input type="hidden" id="category-id" value="">
+        
+        <!-- Name -->
+        <div class="form-group">
+          <label for="category-name" class="form-label">Name</label>
+          <input 
+            type="text" 
+            id="category-name" 
+            required
+            class="input"
+            placeholder="e.g., Subscriptions">
+        </div>
+        
+        <!-- Description -->
+        <div class="form-group">
+          <label for="category-description" class="form-label">
+            Description <span class="form-label-optional">(optional)</span>
+          </label>
+          <input 
+            type="text" 
+            id="category-description"
+            class="input"
+            placeholder="Brief description">
+        </div>
+        
+        <!-- Icon Selection -->
+        <div class="form-group">
+          <label class="form-label">Icon</label>
+          <div class="icon-grid" id="icon-grid">
+            <% availableIcons.forEach(icon => { %>
+              <button type="button" 
+                      onclick="selectIcon('<%= icon %>')"
+                      class="icon-option"
+                      data-icon="<%= icon %>">
+                <i data-lucide="<%= icon %>"></i>
+              </button>
+            <% }) %>
+          </div>
+          <input type="hidden" id="category-icon" value="shopping-bag">
+        </div>
+        
+        <!-- Color Selection -->
+        <div class="form-group">
+          <label class="form-label">Color</label>
+          <div class="color-grid" id="color-grid">
+            <% availableColors.forEach(color => { %>
+              <button type="button" 
+                      onclick="selectColor('<%= color %>')"
+                      class="color-option"
+                      style="background-color: <%= getColorHex(color) %>"
+                      data-color="<%= color %>">
+              </button>
+            <% }) %>
+          </div>
+          <input type="hidden" id="category-color" value="slate">
+        </div>
+      </form>
+      
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button onclick="closeModal()" class="btn btn-ghost">Cancel</button>
+        <button onclick="saveCategory()" class="btn btn-primary">Save Category</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="modal-overlay">
+  <div class="modal-backdrop" onclick="closeDeleteModal()"></div>
+  
+  <div class="modal-container">
+    <div class="modal modal-sm" id="delete-modal-content">
+      <div class="modal-delete-text">
+        <div class="modal-delete-icon">
+          <i data-lucide="trash-2"></i>
+        </div>
+        <h3 class="text-lg font-bold mb-2">Delete Category</h3>
+        <p class="text-sm text-muted mb-1">
+          Are you sure you want to delete <span id="delete-category-name" class="font-medium"></span>?
+        </p>
+        <p id="delete-warning" class="text-sm text-warning hidden">
+          This will uncategorize <span id="delete-payment-count"></span> payments.
+        </p>
+      </div>
+      
+      <div class="modal-delete-actions">
+        <button onclick="closeDeleteModal()">Cancel</button>
+        <button onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const BT_BASE_PATH = window.__BT_BASE_PATH__ || '';
+
+  let currentCategoryId = null;
+  let deleteId = null;
+  
+  // Icon selection
+  function selectIcon(icon) {
+    document.querySelectorAll('.icon-option').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    const selected = document.querySelector(`.icon-option[data-icon="${icon}"]`);
+    if (selected) {
+      selected.classList.add('active');
+    }
+    document.getElementById('category-icon').value = icon;
+  }
+  
+  // Color selection
+  function selectColor(color) {
+    document.querySelectorAll('.color-option').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    const selected = document.querySelector(`.color-option[data-color="${color}"]`);
+    if (selected) {
+      selected.classList.add('active');
+    }
+    document.getElementById('category-color').value = color;
+  }
+  
+  // Modal functions
+  function openAddModal() {
+    currentCategoryId = null;
+    document.getElementById('modal-title').textContent = 'Add Category';
+    document.getElementById('category-id').value = '';
+    document.getElementById('category-name').value = '';
+    document.getElementById('category-description').value = '';
+    selectIcon('shopping-bag');
+    selectColor('slate');
+    openModal();
+  }
+  
+  function openEditModal(id, name, icon, color, description) {
+    currentCategoryId = id;
+    document.getElementById('modal-title').textContent = 'Edit Category';
+    document.getElementById('category-id').value = id;
+    document.getElementById('category-name').value = name;
+    document.getElementById('category-description').value = description;
+    selectIcon(icon);
+    selectColor(color);
+    openModal();
+  }
+  
+  function openModal() {
+    const modal = document.getElementById('category-modal');
+    const content = document.getElementById('modal-content');
+    modal.classList.add('active');
+    lucide.createIcons();
+    setTimeout(() => {
+      content.classList.add('active');
+    }, 10);
+  }
+  
+  function closeModal() {
+    const modal = document.getElementById('category-modal');
+    const content = document.getElementById('modal-content');
+    content.classList.remove('active');
+    setTimeout(() => modal.classList.remove('active'), 200);
+  }
+  
+  function openDeleteModal(id, name, paymentCount) {
+    deleteId = id;
+    document.getElementById('delete-category-name').textContent = name;
+    const warning = document.getElementById('delete-warning');
+    if (paymentCount > 0) {
+      document.getElementById('delete-payment-count').textContent = paymentCount;
+      warning.classList.remove('hidden');
+    } else {
+      warning.classList.add('hidden');
+    }
+    
+    const modal = document.getElementById('delete-modal');
+    const content = document.getElementById('delete-modal-content');
+    modal.classList.add('active');
+    setTimeout(() => {
+      content.classList.add('active');
+    }, 10);
+  }
+  
+  function closeDeleteModal() {
+    const modal = document.getElementById('delete-modal');
+    const content = document.getElementById('delete-modal-content');
+    content.classList.remove('active');
+    setTimeout(() => modal.classList.remove('active'), 200);
+    deleteId = null;
+  }
+  
+  async function saveCategory() {
+    const name = document.getElementById('category-name').value;
+    if (!name) {
+      alert('Please enter a category name');
+      return;
+    }
+    
+    const data = {
+      name: name,
+      description: document.getElementById('category-description').value,
+      icon: document.getElementById('category-icon').value,
+      color: document.getElementById('category-color').value
+    };
+    
+    try {
+      if (currentCategoryId) {
+        // Update existing
+        const response = await fetch(`${BT_BASE_PATH}/payment-types/${currentCategoryId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          alert('Failed to update category');
+        }
+      } else {
+        // Create new - use form POST
+        const formData = new URLSearchParams();
+        formData.append('name', data.name);
+        formData.append('description', data.description);
+        formData.append('icon', data.icon);
+        formData.append('color', data.color);
+        
+        const response = await fetch(BT_BASE_PATH + '/payment-types', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData.toString()
+        });
+        
+        if (response.redirected || response.ok) {
+          window.location.reload();
+        } else {
+          alert('Failed to create category');
+        }
+      }
+    } catch (err) {
+      console.error('Error saving category:', err);
+      alert('Network error: ' + err.message);
+    }
+    closeModal();
+  }
+  
+  async function confirmDelete() {
+    if (!deleteId) return;
+    
+    try {
+      const response = await fetch(`${BT_BASE_PATH}/payment-types/${deleteId}`, {
+        method: 'DELETE'
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        window.location.reload();
+      } else {
+        alert('Failed to delete category: ' + (result.error || 'Unknown error'));
+      }
+    } catch (err) {
+      console.error('Error deleting category:', err);
+      alert('Network error: ' + err.message);
+    }
+    closeDeleteModal();
+  }
+  
+  // Close modals on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      closeDeleteModal();
+    }
+  });
+</script>
+
+<%- include('partials/footer') %>

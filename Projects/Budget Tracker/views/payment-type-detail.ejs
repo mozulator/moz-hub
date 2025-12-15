@@ -1,0 +1,339 @@
+<%- include('partials/head', { title: paymentType.name }) %>
+<%- include('partials/nav') %>
+
+<%
+// Helper functions for colors
+function getColorHex(color) {
+  const colors = {
+    rose: '#e11d48', emerald: '#059669', sky: '#0284c7', amber: '#d97706',
+    violet: '#7c3aed', red: '#dc2626', fuchsia: '#c026d3', slate: '#475569',
+  };
+  return colors[color] || '#71717a';
+}
+function getColorBg(color) {
+  const colors = {
+    rose: '#ffe4e6', emerald: '#d1fae5', sky: '#e0f2fe', amber: '#fef3c7',
+    violet: '#ede9fe', red: '#fee2e2', fuchsia: '#fae8ff', slate: '#f1f5f9',
+  };
+  return colors[color] || '#f4f4f5';
+}
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+// Group payments by recipient
+const paymentsByRecipient = {};
+payments.forEach(p => {
+  if (!paymentsByRecipient[p.recipient]) {
+    paymentsByRecipient[p.recipient] = [];
+  }
+  paymentsByRecipient[p.recipient].push(p);
+});
+const recipients = Object.keys(paymentsByRecipient).sort((a, b) => {
+  const totalA = paymentsByRecipient[a].reduce((sum, p) => sum + p.amount, 0);
+  const totalB = paymentsByRecipient[b].reduce((sum, p) => sum + p.amount, 0);
+  return totalB - totalA;
+});
+%>
+
+<main class="container page">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a href="<%= basePath %>/payment-types">Categories</a>
+    <i data-lucide="chevron-right"></i>
+    <span class="breadcrumb-current"><%= paymentType.name %></span>
+  </nav>
+  
+  <!-- Header Card -->
+  <div class="card card-header mb-8">
+    <div class="category-detail-header">
+      <div class="category-detail-icon" style="background-color: <%= getColorBg(paymentType.color) %>">
+        <i data-lucide="<%= paymentType.icon %>" style="color: <%= getColorHex(paymentType.color) %>"></i>
+      </div>
+      <div class="category-detail-info">
+        <h1 class="page-title"><%= paymentType.name %></h1>
+        <% if (paymentType.description) { %>
+          <p class="page-description"><%= paymentType.description %></p>
+        <% } %>
+      </div>
+    </div>
+    <div class="stat-group mt-6">
+      <div class="stat">
+        <p class="stat-label">Total Spent</p>
+        <p class="stat-value"><%= formatCurrency(stats.totalAmount) %></p>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <p class="stat-label">Payments</p>
+        <p class="stat-value"><%= stats.paymentCount %></p>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <p class="stat-label">Average</p>
+        <p class="stat-value"><%= formatCurrency(stats.averageAmount) %></p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="layout-sidebar">
+    <!-- Main Content: Payments List -->
+    <div>
+      <!-- Filter Controls -->
+      <div class="section-header">
+        <h2>All Payments</h2>
+        
+        <div class="select-wrapper">
+          <select 
+            id="month-filter"
+            onchange="filterByMonth(this.value)"
+            class="select">
+            <option value="">All time</option>
+            <% availableMonths.forEach(m => { %>
+              <option value="<%= m.value %>" <%= selectedMonth === m.value ? 'selected' : '' %>><%= m.label %></option>
+            <% }) %>
+          </select>
+          <div class="select-icon">
+            <i data-lucide="chevron-down"></i>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Payments Grid -->
+      <div class="card card-table">
+        <div class="data-grid">
+          <div class="data-grid-header">
+            <div class="data-col data-col-date">Date</div>
+            <div class="data-col data-col-recipient">Recipient</div>
+            <div class="data-col data-col-amount">Amount</div>
+          </div>
+          <div class="data-grid-body">
+            <% payments.forEach(payment => { %>
+              <div class="data-grid-row">
+                <div class="data-col data-col-date">
+                  <span class="data-date"><%= formatDate(payment.date) %></span>
+                </div>
+                <div class="data-col data-col-recipient">
+                  <span class="data-recipient"><%= payment.recipient %></span>
+                </div>
+                <div class="data-col data-col-amount">
+                  <span class="data-amount"><%= formatCurrency(payment.amount) %></span>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+        
+        <% if (payments.length === 0) { %>
+          <div class="empty-state empty-state-compact">
+            <div class="empty-icon empty-icon-sm">
+              <i data-lucide="receipt"></i>
+            </div>
+            <p class="text-sm text-muted">No payments in this category<%= selectedMonth ? ' for the selected month' : '' %>.</p>
+          </div>
+        <% } %>
+        
+        <% if (payments.length > 0) { %>
+          <div class="data-grid-footer data-grid-footer-end">
+            <span class="data-grid-footer-total">
+              Total: <%= formatCurrency(payments.reduce((sum, p) => sum + p.amount, 0)) %>
+            </span>
+          </div>
+        <% } %>
+      </div>
+    </div>
+    
+    <!-- Sidebar: Services & Top Recipients -->
+    <div>
+      <!-- Services / Unsubscribe Links -->
+      <div>
+        <div class="section-header">
+          <h2>Services</h2>
+          <button onclick="openServiceModal()" class="btn btn-ghost btn-icon" title="Add service">
+            <i data-lucide="plus"></i>
+          </button>
+        </div>
+        
+        <% if (services.length > 0) { %>
+          <div class="services-list">
+            <% services.forEach(service => { %>
+              <div class="card service-card card-hover">
+                <div class="service-header">
+                  <div class="service-info">
+                    <h3 class="service-name"><%= service.name %></h3>
+                    <% 
+                      const servicePayments = payments.filter(p => p.serviceId === service.id);
+                      const serviceTotal = servicePayments.reduce((sum, p) => sum + p.amount, 0);
+                    %>
+                    <p class="service-meta">
+                      <%= servicePayments.length %> payment<%= servicePayments.length !== 1 ? 's' : '' %> · <%= formatCurrency(serviceTotal) %>
+                    </p>
+                  </div>
+                  
+                  <% if (service.unsubscribeUrl) { %>
+                    <a href="<%= service.unsubscribeUrl %>" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="unsubscribe-btn">
+                      <span>Unsubscribe</span>
+                      <i data-lucide="external-link"></i>
+                    </a>
+                  <% } %>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="card empty-card">
+            <div class="empty-icon empty-icon-xs">
+              <i data-lucide="link"></i>
+            </div>
+            <p class="text-sm text-muted">No services linked yet.</p>
+            <button onclick="openServiceModal()" class="text-link mt-3">
+              Add a service
+            </button>
+          </div>
+        <% } %>
+      </div>
+      
+      <!-- Top Recipients -->
+      <div class="mt-8">
+        <h2 class="mb-5">Top Recipients</h2>
+        
+        <div class="card card-table recipients-list">
+          <% recipients.slice(0, 5).forEach((recipient, index) => { 
+            const recipientPayments = paymentsByRecipient[recipient];
+            const recipientTotal = recipientPayments.reduce((sum, p) => sum + p.amount, 0);
+          %>
+            <div class="recipient-item">
+              <div class="recipient-left">
+                <span class="recipient-rank"><%= index + 1 %></span>
+                <span class="recipient-name"><%= recipient %></span>
+              </div>
+              <span class="recipient-total"><%= formatCurrency(recipientTotal) %></span>
+            </div>
+          <% }) %>
+          
+          <% if (recipients.length === 0) { %>
+            <div class="empty-inline">
+              <span class="text-sm text-muted">No recipients yet.</span>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Add Service Modal -->
+<div id="service-modal" class="modal-overlay">
+  <div class="modal-backdrop" onclick="closeServiceModal()"></div>
+  
+  <div class="modal-container">
+    <div class="modal" id="service-modal-content">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">Add Service</h2>
+        <button onclick="closeServiceModal()" class="btn btn-ghost btn-icon">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      
+      <!-- Body -->
+      <form id="service-form" class="modal-body">
+        <!-- Name -->
+        <div class="form-group">
+          <label for="service-name" class="form-label">Service Name</label>
+          <input 
+            type="text" 
+            id="service-name" 
+            required
+            class="input"
+            placeholder="e.g., Netflix">
+        </div>
+        
+        <!-- Unsubscribe URL -->
+        <div class="form-group">
+          <label for="service-url" class="form-label">
+            Unsubscribe URL <span class="form-label-optional">(optional)</span>
+          </label>
+          <input 
+            type="url" 
+            id="service-url"
+            class="input"
+            placeholder="https://...">
+          <p class="text-xs text-muted mt-1">Link to the service's cancellation or settings page.</p>
+        </div>
+      </form>
+      
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button onclick="closeServiceModal()" class="btn btn-ghost">Cancel</button>
+        <button onclick="saveService()" class="btn btn-primary">Add Service</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const BT_BASE_PATH = window.__BT_BASE_PATH__ || '';
+
+  function filterByMonth(month) {
+    let url = BT_BASE_PATH + '/payment-types/<%= paymentType.id %>';
+    if (month) url += '?month=' + month;
+    window.location.href = url;
+  }
+  
+  function openServiceModal() {
+    const modal = document.getElementById('service-modal');
+    const content = document.getElementById('service-modal-content');
+    modal.classList.add('active');
+    lucide.createIcons();
+    setTimeout(() => {
+      content.classList.add('active');
+    }, 10);
+  }
+  
+  function closeServiceModal() {
+    const modal = document.getElementById('service-modal');
+    const content = document.getElementById('service-modal-content');
+    content.classList.remove('active');
+    setTimeout(() => modal.classList.remove('active'), 200);
+  }
+  
+  async function saveService() {
+    const name = document.getElementById('service-name').value;
+    if (!name) {
+      alert('Please enter a service name');
+      return;
+    }
+    
+    const formData = new URLSearchParams();
+    formData.append('name', name);
+    formData.append('unsubscribeUrl', document.getElementById('service-url').value);
+    
+    try {
+      const response = await fetch(BT_BASE_PATH + '/payment-types/<%= paymentType.id %>/services', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
+      });
+      
+      if (response.redirected || response.ok) {
+        // Reload page to show new service
+        window.location.reload();
+      } else {
+        alert('Failed to add service');
+      }
+    } catch (err) {
+      console.error('Error adding service:', err);
+      alert('Network error: ' + err.message);
+    }
+  }
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeServiceModal();
+  });
+</script>
+
+<%- include('partials/footer') %>

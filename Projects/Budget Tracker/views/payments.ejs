@@ -1,0 +1,542 @@
+<%- include('partials/head', { title: 'Payments' }) %>
+<%- include('partials/nav') %>
+
+<%
+// Helper functions for colors
+function getColorHex(color) {
+  const colors = {
+    rose: '#e11d48', emerald: '#059669', sky: '#0284c7', amber: '#d97706',
+    violet: '#7c3aed', red: '#dc2626', fuchsia: '#c026d3', slate: '#475569',
+  };
+  return colors[color] || '#71717a';
+}
+function getColorBg(color) {
+  const colors = {
+    rose: '#ffe4e6', emerald: '#d1fae5', sky: '#e0f2fe', amber: '#fef3c7',
+    violet: '#ede9fe', red: '#fee2e2', fuchsia: '#fae8ff', slate: '#f1f5f9',
+  };
+  return colors[color] || '#f4f4f5';
+}
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+%>
+
+<main class="container page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Payments</h1>
+      <p class="page-description">View and categorize your transactions</p>
+    </div>
+    
+    <!-- Controls -->
+    <div class="controls-row">
+      <!-- Month Selector -->
+      <div class="select-wrapper">
+        <select 
+          id="month-selector"
+          onchange="updateFilters()"
+          class="select">
+          <% availableMonths.forEach(m => { %>
+            <option value="<%= m.value %>" <%= m.value === month ? 'selected' : '' %>><%= m.label %></option>
+          <% }) %>
+        </select>
+        <div class="select-icon">
+          <i data-lucide="chevron-down"></i>
+        </div>
+      </div>
+      
+      <!-- Search -->
+      <div class="input-icon-wrapper search-input-wrapper">
+        <div class="input-icon">
+          <i data-lucide="search"></i>
+        </div>
+        <input 
+          type="text" 
+          id="search-input"
+          value="<%= search %>"
+          placeholder="Search recipient..."
+          onkeyup="debounceSearch()"
+          class="input input-with-icon">
+      </div>
+      
+      <!-- Import Button -->
+      <button onclick="openImportModal()" class="btn btn-primary">
+        <i data-lucide="upload"></i>
+        <span>Import</span>
+      </button>
+      
+      <!-- Clear Button -->
+      <button onclick="openClearModal()" class="btn btn-ghost btn-danger-ghost">
+        <i data-lucide="trash-2"></i>
+        <span>Clear</span>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Payments Grid -->
+  <div class="card card-table">
+    <div class="data-grid">
+      <div class="data-grid-header">
+        <div class="data-col data-col-index">#</div>
+        <div class="data-col data-col-date">Date</div>
+        <div class="data-col data-col-recipient">Recipient</div>
+        <div class="data-col data-col-category">Category</div>
+        <div class="data-col data-col-amount">Amount</div>
+      </div>
+      <div class="data-grid-body">
+        <% payments.forEach((payment, index) => { %>
+          <div class="data-grid-row">
+            <div class="data-col data-col-index">
+              <span class="data-index"><%= String(index + 1).padStart(2, '0') %></span>
+            </div>
+            <div class="data-col data-col-date">
+              <span class="data-date"><%= formatDate(payment.date) %></span>
+            </div>
+            <div class="data-col data-col-recipient">
+              <span class="data-recipient"><%= payment.recipient %></span>
+            </div>
+            <div class="data-col data-col-category">
+              <div class="data-category-wrapper">
+                <select 
+                  class="data-category-select category-select"
+                  style="background-color: <%= payment.paymentType ? getColorBg(payment.paymentType.color) : '#f4f4f5' %>; 
+                         color: <%= payment.paymentType ? getColorHex(payment.paymentType.color) : '#71717a' %>;"
+                  data-payment-id="<%= payment.id %>">
+                  <option value="">Uncategorized</option>
+                  <% paymentTypes.forEach(pt => { %>
+                    <option value="<%= pt.id %>" <%= payment.paymentTypeId === pt.id ? 'selected' : '' %>><%= pt.name %></option>
+                  <% }) %>
+                </select>
+                <div class="select-icon">
+                  <i data-lucide="chevron-down"></i>
+                </div>
+              </div>
+            </div>
+            <div class="data-col data-col-amount">
+              <span class="data-amount"><%= formatCurrency(payment.amount) %></span>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+    
+    <% if (payments.length === 0) { %>
+      <div class="empty-state empty-state-compact">
+        <div class="empty-icon empty-icon-sm">
+          <i data-lucide="receipt"></i>
+        </div>
+        <h3 class="empty-title">No payments found</h3>
+        <p class="empty-description">
+          <% if (search) { %>
+            No results for "<%= search %>". Try a different search term.
+          <% } else { %>
+            Import a bank statement to see your transactions.
+          <% } %>
+        </p>
+      </div>
+    <% } %>
+    
+    <!-- Grid Footer -->
+    <% if (payments.length > 0) { %>
+      <div class="data-grid-footer">
+        <span class="data-grid-footer-text">
+          Showing <span class="font-medium"><%= payments.length %></span> payments
+        </span>
+        <span class="data-grid-footer-total">
+          Total: <%= formatCurrency(payments.reduce((sum, p) => sum + p.amount, 0)) %>
+        </span>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<!-- Clear Month Modal -->
+<div id="clear-modal" class="modal-overlay">
+  <div class="modal-backdrop" onclick="closeClearModal()"></div>
+  <div class="modal-container">
+    <div class="modal" id="clear-modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Clear Month Data</h2>
+        <button onclick="closeClearModal()" class="btn btn-ghost btn-icon">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="modal-delete-icon">
+          <i data-lucide="alert-triangle"></i>
+        </div>
+        <p class="text-base font-medium mb-2">Are you sure you want to delete all payments for this month?</p>
+        <p class="text-sm text-muted">This will permanently remove <strong><%= payments.length %></strong> payment(s) from <strong><%= availableMonths.find(m => m.value === month)?.label || month %></strong>.</p>
+        <p class="text-xs text-muted mt-4">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeClearModal()" class="btn btn-ghost">Cancel</button>
+        <button id="clear-btn" onclick="clearMonth()" class="btn btn-danger">
+          <i data-lucide="trash-2"></i>
+          <span>Delete All</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div id="import-modal" class="modal-overlay">
+  <!-- Backdrop -->
+  <div class="modal-backdrop" onclick="closeImportModal()"></div>
+  
+  <!-- Modal Content -->
+  <div class="modal-container">
+    <div class="modal" id="modal-content">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">Import Bank Statement</h2>
+        <button onclick="closeImportModal()" class="btn btn-ghost btn-icon">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      
+      <!-- Body -->
+      <div class="modal-body">
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+          <div class="upload-icon" id="upload-icon">
+            <i data-lucide="file-text"></i>
+          </div>
+          <p class="upload-text" id="upload-text">Click to upload or drag and drop</p>
+          <p class="upload-hint" id="upload-hint">Bank statement PDF file (max 10MB)</p>
+          <input type="file" id="file-input" accept=".pdf,application/pdf" class="hidden">
+        </div>
+        
+        <!-- Processing Status -->
+        <div id="processing-status" class="processing-status hidden">
+          <div class="processing-spinner">
+            <i data-lucide="loader-2" class="animate-spin"></i>
+          </div>
+          <p class="processing-text" id="processing-text">Uploading PDF...</p>
+          <p class="processing-hint">AI is extracting payment data from your statement</p>
+        </div>
+        
+        <!-- Import Summary (hidden by default) -->
+        <div id="import-summary" class="import-summary hidden">
+          <div class="import-summary-header">
+            <i data-lucide="check-circle" class="import-summary-icon"></i>
+            <span id="summary-count">0 payments imported</span>
+          </div>
+          <div class="import-summary-details">
+            <span id="summary-details"></span>
+          </div>
+        </div>
+        
+        <!-- Error message -->
+        <div id="import-error" class="alert alert-error hidden mt-4">
+          <i data-lucide="alert-circle" class="alert-icon"></i>
+          <span id="error-message"></span>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button onclick="closeImportModal()" class="btn btn-ghost" id="cancel-btn">Cancel</button>
+        <button id="import-btn" onclick="importPDF()" class="btn btn-primary" disabled>
+          <i data-lucide="sparkles"></i>
+          <span>Extract & Import</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const BT_BASE_PATH = window.__BT_BASE_PATH__ || '';
+
+  // State
+  let selectedFile = null;
+  
+  // Filter functions
+  function updateFilters() {
+    const month = document.getElementById('month-selector').value;
+    const search = document.getElementById('search-input').value;
+    let url = BT_BASE_PATH + '/payments?month=' + month;
+    if (search) url += '&search=' + encodeURIComponent(search);
+    window.location.href = url;
+  }
+  
+  let searchTimeout;
+  function debounceSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(updateFilters, 500);
+  }
+  
+  // Modal functions
+  function openImportModal() {
+    const modal = document.getElementById('import-modal');
+    const content = document.getElementById('modal-content');
+    modal.classList.add('active');
+    setTimeout(() => {
+      content.classList.add('active');
+    }, 10);
+    resetImportModal();
+    lucide.createIcons();
+  }
+  
+  function closeImportModal() {
+    const modal = document.getElementById('import-modal');
+    const content = document.getElementById('modal-content');
+    content.classList.remove('active');
+    setTimeout(() => {
+      modal.classList.remove('active');
+      resetImportModal();
+    }, 200);
+  }
+  
+  function resetImportModal() {
+    selectedFile = null;
+    document.getElementById('file-input').value = '';
+    document.getElementById('upload-zone').classList.remove('upload-zone-active', 'upload-zone-success');
+    document.getElementById('upload-zone').style.display = 'flex';
+    document.getElementById('upload-text').textContent = 'Click to upload or drag and drop';
+    document.getElementById('upload-hint').textContent = 'Bank statement PDF file (max 10MB)';
+    document.getElementById('processing-status').classList.add('hidden');
+    document.getElementById('import-summary').classList.add('hidden');
+    document.getElementById('import-error').classList.add('hidden');
+    document.getElementById('import-btn').disabled = true;
+    document.getElementById('import-btn').innerHTML = '<i data-lucide="sparkles"></i><span>Extract & Import</span>';
+    document.getElementById('cancel-btn').textContent = 'Cancel';
+    lucide.createIcons();
+  }
+  
+  // File handling
+  const uploadZone = document.getElementById('upload-zone');
+  const fileInput = document.getElementById('file-input');
+  
+  // Drag and drop
+  uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.classList.add('upload-zone-active');
+  });
+  
+  uploadZone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('upload-zone-active');
+  });
+  
+  uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('upload-zone-active');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFile(files[0]);
+    }
+  });
+  
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      handleFile(e.target.files[0]);
+    }
+  });
+  
+  function handleFile(file) {
+    // Check file type
+    if (!file.type.includes('pdf') && !file.name.toLowerCase().endsWith('.pdf')) {
+      showError('Please select a PDF file');
+      return;
+    }
+    
+    // Check file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      showError('File is too large. Maximum size is 10MB');
+      return;
+    }
+    
+    selectedFile = file;
+    
+    // Show success state
+    uploadZone.classList.add('upload-zone-success');
+    document.getElementById('upload-text').textContent = file.name;
+    document.getElementById('upload-hint').textContent = `${(file.size / 1024).toFixed(1)} KB - Ready to extract`;
+    
+    document.getElementById('import-error').classList.add('hidden');
+    document.getElementById('import-btn').disabled = false;
+    lucide.createIcons();
+  }
+  
+  function showError(message) {
+    document.getElementById('error-message').textContent = message;
+    document.getElementById('import-error').classList.remove('hidden');
+    document.getElementById('import-summary').classList.add('hidden');
+    document.getElementById('processing-status').classList.add('hidden');
+    document.getElementById('upload-zone').style.display = 'flex';
+    document.getElementById('import-btn').disabled = selectedFile ? false : true;
+    document.getElementById('import-btn').innerHTML = '<i data-lucide="sparkles"></i><span>Extract & Import</span>';
+    lucide.createIcons();
+  }
+  
+  async function importPDF() {
+    if (!selectedFile) return;
+    
+    const btn = document.getElementById('import-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i><span>Processing...</span>';
+    
+    // Hide upload zone, show processing
+    document.getElementById('upload-zone').style.display = 'none';
+    document.getElementById('processing-status').classList.remove('hidden');
+    document.getElementById('import-error').classList.add('hidden');
+    document.getElementById('processing-text').textContent = 'Uploading PDF...';
+    lucide.createIcons();
+    
+    try {
+      // Update status
+      setTimeout(() => {
+        document.getElementById('processing-text').textContent = 'AI is analyzing your bank statement...';
+      }, 1000);
+      
+      // Create form data
+      const formData = new FormData();
+      formData.append('pdf', selectedFile);
+      
+      const response = await fetch(BT_BASE_PATH + '/payments/import', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Show success
+        document.getElementById('processing-status').classList.add('hidden');
+        document.getElementById('import-summary').classList.remove('hidden');
+        document.getElementById('summary-count').textContent = 
+          `${result.imported} payment${result.imported !== 1 ? 's' : ''} imported successfully`;
+        
+        let details = [];
+        if (result.skipped > 0) {
+          details.push(`${result.skipped} skipped (duplicates)`);
+        }
+        if (result.metadata?.statementPeriod) {
+          details.push(`Period: ${result.metadata.statementPeriod}`);
+        }
+        document.getElementById('summary-details').textContent = details.join(' • ');
+        
+        document.getElementById('cancel-btn').textContent = 'Close';
+        btn.innerHTML = '<i data-lucide="check"></i><span>Done</span>';
+        btn.onclick = () => window.location.reload();
+        btn.disabled = false;
+        lucide.createIcons();
+        
+      } else {
+        showError(result.error || 'Import failed');
+      }
+    } catch (err) {
+      showError('Network error: ' + err.message);
+    }
+  }
+  
+  // Category change handler
+  document.querySelectorAll('.data-category-select').forEach(select => {
+    select.addEventListener('change', async (e) => {
+      const paymentId = e.target.dataset.paymentId;
+      const paymentTypeId = e.target.value;
+      
+      try {
+        const response = await fetch(`${BT_BASE_PATH}/payments/${paymentId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentTypeId: paymentTypeId || null })
+        });
+        
+        const result = await response.json();
+        if (result.success && result.payment.paymentType) {
+          // Update select styling
+          const colors = {
+            rose: { bg: '#ffe4e6', fg: '#e11d48' },
+            emerald: { bg: '#d1fae5', fg: '#059669' },
+            sky: { bg: '#e0f2fe', fg: '#0284c7' },
+            amber: { bg: '#fef3c7', fg: '#d97706' },
+            violet: { bg: '#ede9fe', fg: '#7c3aed' },
+            red: { bg: '#fee2e2', fg: '#dc2626' },
+            fuchsia: { bg: '#fae8ff', fg: '#c026d3' },
+            slate: { bg: '#f1f5f9', fg: '#475569' },
+            cyan: { bg: '#cffafe', fg: '#0891b2' },
+            orange: { bg: '#ffedd5', fg: '#ea580c' },
+            gray: { bg: '#f4f4f5', fg: '#71717a' },
+            stone: { bg: '#f5f5f4', fg: '#78716c' }
+          };
+          const color = result.payment.paymentType.color;
+          const c = colors[color] || colors.gray;
+          e.target.style.backgroundColor = c.bg;
+          e.target.style.color = c.fg;
+        } else if (result.success) {
+          e.target.style.backgroundColor = '#f4f4f5';
+          e.target.style.color = '#71717a';
+        }
+      } catch (err) {
+        console.error('Failed to update category:', err);
+      }
+    });
+  });
+  
+  // Close modal on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeImportModal();
+      closeClearModal();
+    }
+  });
+  
+  // Clear Modal Functions
+  function openClearModal() {
+    const modal = document.getElementById('clear-modal');
+    const content = document.getElementById('clear-modal-content');
+    modal.classList.add('active');
+    setTimeout(() => {
+      content.classList.add('active');
+    }, 10);
+    lucide.createIcons();
+  }
+  
+  function closeClearModal() {
+    const modal = document.getElementById('clear-modal');
+    const content = document.getElementById('clear-modal-content');
+    content.classList.remove('active');
+    setTimeout(() => {
+      modal.classList.remove('active');
+    }, 200);
+  }
+  
+  async function clearMonth() {
+    const btn = document.getElementById('clear-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i><span>Deleting...</span>';
+    lucide.createIcons();
+    
+    const month = document.getElementById('month-selector').value;
+    
+    try {
+      const response = await fetch(`${BT_BASE_PATH}/payments/clear?month=${month}`, {
+        method: 'DELETE'
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        window.location.reload();
+      } else {
+        alert(result.error || 'Failed to clear payments');
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="trash-2"></i><span>Delete All</span>';
+        lucide.createIcons();
+      }
+    } catch (err) {
+      alert('Network error: ' + err.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="trash-2"></i><span>Delete All</span>';
+      lucide.createIcons();
+    }
+  }
+</script>
+
+<%- include('partials/footer') %>
