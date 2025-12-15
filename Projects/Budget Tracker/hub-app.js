@@ -30,6 +30,10 @@ function createApp({ basePath, repoRoot }) {
 
   const app = express();
 
+  // Render (and most PaaS) terminates TLS at the edge proxy.
+  // Trust the proxy so secure cookies/sessions work correctly.
+  app.set('trust proxy', 1);
+
   // OpenAI client (optional)
   const openai = process.env.OPENAI_API_KEY
     ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -77,7 +81,9 @@ function createApp({ basePath, repoRoot }) {
       cookie: {
         httpOnly: true,
         sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        // Use secure cookies in production, but allow proxy-terminated TLS to work.
+        // "auto" = secure when Express considers the request secure.
+        secure: process.env.NODE_ENV === 'production' ? 'auto' : false,
         path: basePathNorm || '/'
       }
     })
