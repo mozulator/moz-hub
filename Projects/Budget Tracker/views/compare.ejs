@@ -540,7 +540,7 @@ function getColorBg(color) {
     const content = document.getElementById('summary-modal-content');
     modal.classList.add('active');
     setTimeout(() => content.classList.add('active'), 10);
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
   
   function closeSummaryModal() {
@@ -585,14 +585,14 @@ function getColorBg(color) {
         document.getElementById('summary-footer').style.display = 'flex';
       }
       
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
       
     } catch (err) {
       document.getElementById('summary-loading').classList.add('hidden');
       document.getElementById('summary-error').classList.remove('hidden');
       document.getElementById('summary-error-msg').textContent = 'Network error: ' + err.message;
       document.getElementById('summary-footer').style.display = 'flex';
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
   }
   

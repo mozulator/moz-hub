@@ -6,7 +6,7 @@
 
   <!-- Initialize Lucide Icons + Page Preloading -->
   <script>
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 
     const BT_BASE_PATH = window.__BT_BASE_PATH__ || '';
     
@@ -27,7 +27,7 @@
       localStorage.setItem('theme', newTheme);
       
       // Re-initialize icons for the toggle button
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
       
       // Remove transition class after color change
       setTimeout(() => {
@@ -44,6 +44,10 @@
     
     // Page Preloading System for instant navigation
     (function() {
+      // This preloading/navigation hack is fragile when the app is mounted under the hub.
+      // Disable it for mounted usage to avoid breaking inline scripts/modals.
+      if (BT_BASE_PATH) return;
+
       const pageCache = new Map();
       const preloadedUrls = new Set();
       
@@ -59,7 +63,7 @@
       // Initialize on DOM ready
       window.addEventListener('DOMContentLoaded', () => {
         initTheme();
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
         
         // Preload all main pages immediately
         preloadAllPages();
@@ -130,7 +134,7 @@
           
           // Re-run initialization
           initTheme();
-          lucide.createIcons();
+          if (typeof lucide !== 'undefined') lucide.createIcons();
           
           // Refresh cache for this page in background
           preloadedUrls.delete(basePath);
@@ -149,7 +153,7 @@
           document.write(cached.html);
           document.close();
           initTheme();
-          lucide.createIcons();
+          if (typeof lucide !== 'undefined') lucide.createIcons();
         } else {
           // Fallback to full reload
           window.location.reload();

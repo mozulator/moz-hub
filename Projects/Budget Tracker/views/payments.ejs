@@ -279,7 +279,7 @@ function formatDate(dateStr) {
       content.classList.add('active');
     }, 10);
     resetImportModal();
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
   
   function closeImportModal() {
@@ -305,7 +305,8 @@ function formatDate(dateStr) {
     document.getElementById('import-btn').disabled = true;
     document.getElementById('import-btn').innerHTML = '<i data-lucide="sparkles"></i><span>Extract & Import</span>';
     document.getElementById('cancel-btn').textContent = 'Cancel';
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
   
   // File handling
@@ -360,7 +361,7 @@ function formatDate(dateStr) {
     
     document.getElementById('import-error').classList.add('hidden');
     document.getElementById('import-btn').disabled = false;
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
   
   function showError(message) {
@@ -371,7 +372,7 @@ function formatDate(dateStr) {
     document.getElementById('upload-zone').style.display = 'flex';
     document.getElementById('import-btn').disabled = selectedFile ? false : true;
     document.getElementById('import-btn').innerHTML = '<i data-lucide="sparkles"></i><span>Extract & Import</span>';
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
   
   async function importPDF() {
@@ -386,7 +387,7 @@ function formatDate(dateStr) {
     document.getElementById('processing-status').classList.remove('hidden');
     document.getElementById('import-error').classList.add('hidden');
     document.getElementById('processing-text').textContent = 'Uploading PDF...';
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
     
     try {
       // Update status
@@ -425,7 +426,7 @@ function formatDate(dateStr) {
         btn.innerHTML = '<i data-lucide="check"></i><span>Done</span>';
         btn.onclick = () => window.location.reload();
         btn.disabled = false;
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
         
       } else {
         showError(result.error || 'Import failed');
@@ -495,7 +496,7 @@ function formatDate(dateStr) {
     setTimeout(() => {
       content.classList.add('active');
     }, 10);
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
   
   function closeClearModal() {
@@ -511,7 +512,7 @@ function formatDate(dateStr) {
     const btn = document.getElementById('clear-btn');
     btn.disabled = true;
     btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i><span>Deleting...</span>';
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
     
     const month = document.getElementById('month-selector').value;
     
@@ -528,13 +529,13 @@ function formatDate(dateStr) {
         alert(result.error || 'Failed to clear payments');
         btn.disabled = false;
         btn.innerHTML = '<i data-lucide="trash-2"></i><span>Delete All</span>';
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
       }
     } catch (err) {
       alert('Network error: ' + err.message);
       btn.disabled = false;
       btn.innerHTML = '<i data-lucide="trash-2"></i><span>Delete All</span>';
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
   }
 </script>

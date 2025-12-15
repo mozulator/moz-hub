@@ -340,7 +340,7 @@
     if (hasChanges) {
       saveBtn.innerHTML = '<i data-lucide="save"></i><span>Save Changes</span>';
     }
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
   
   // Tab switching
@@ -356,7 +356,7 @@
       document.getElementById('preview-panel').classList.remove('hidden');
       renderPreview();
     }
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
   
   // Simple markdown preview
@@ -390,7 +390,7 @@
     
     saveBtn.disabled = true;
     saveBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i><span>Saving...</span>';
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
     
     try {
       const response = await fetch(BT_BASE_PATH + '/prompt', {
@@ -417,7 +417,7 @@
       saveBtn.disabled = false;
       saveBtn.innerHTML = '<i data-lucide="save"></i><span>Save Changes</span>';
     }
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
   
   // Reset to default
